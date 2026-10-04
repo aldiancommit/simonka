@@ -1,0 +1,13 @@
+/**
+ * SIMONKA Custom Style Overrides
+ * Minimalis — hanya override yang diperlukan di atas default Hope UI.
+ */
+
+/* Sub-nav item padding agar lebih compact */
+.sidebar-base .sub-nav .nav-item .nav-link {
+    padding-left: 1.75rem !important;
+}
+
+.sidebar-base .sub-nav .nav-item .nav-link .item-name {
+    margin-left: 0.5rem !important;
+}
