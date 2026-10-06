@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatePenjadwalanUlangRequest;
 use App\Models\Konsultasi;
 use App\Models\PenjadwalanUlang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PenjadwalanUlangController extends Controller
 {
@@ -14,12 +15,14 @@ class PenjadwalanUlangController extends Controller
     {
         $query = PenjadwalanUlang::with('konsultasi');
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $search = $request->search;
-            $query->whereHas('konsultasi', function ($q) use ($search) {
-                $q->where('nama_pemohon', 'like', "%{$search}%")
-                    ->orWhere('perihal', 'like', "%{$search}%");
-            })->orWhere('alasan', 'like', "%{$search}%");
+            $query->where(function ($query) use ($search) {
+                $query->whereHas('konsultasi', function ($query) use ($search) {
+                    $query->where('nama_pemohon', 'like', "%{$search}%")
+                        ->orWhere('perihal', 'like', "%{$search}%");
+                })->orWhere('alasan', 'like', "%{$search}%");
+            });
         }
 
         $penjadwalanUlangs = $query->latest()->paginate(10);
@@ -43,6 +46,8 @@ class PenjadwalanUlangController extends Controller
 
     public function show(PenjadwalanUlang $penjadwalanUlang)
     {
+        $penjadwalanUlang->load('konsultasi');
+
         return view('penjadwalan-ulang.show', compact('penjadwalanUlang'));
     }
 
@@ -55,15 +60,19 @@ class PenjadwalanUlangController extends Controller
 
     public function update(UpdatePenjadwalanUlangRequest $request, PenjadwalanUlang $penjadwalanUlang)
     {
-        $penjadwalanUlang->update($request->validated());
+        $data = $request->validated();
 
-        if ($penjadwalanUlang->status === 'Disetujui') {
-            $penjadwalanUlang->konsultasi()->update([
-                'tanggal_konsultasi' => $penjadwalanUlang->tanggal_baru,
-                'waktu_mulai' => $penjadwalanUlang->waktu_mulai_baru,
-                'waktu_selesai' => $penjadwalanUlang->waktu_selesai_baru,
-            ]);
-        }
+        DB::transaction(function () use ($penjadwalanUlang, $data): void {
+            $penjadwalanUlang->update($data);
+
+            if ($penjadwalanUlang->status === 'Disetujui') {
+                $penjadwalanUlang->konsultasi()->update([
+                    'tanggal_konsultasi' => $penjadwalanUlang->tanggal_baru,
+                    'waktu_mulai' => $penjadwalanUlang->waktu_mulai_baru,
+                    'waktu_selesai' => $penjadwalanUlang->waktu_selesai_baru,
+                ]);
+            }
+        });
 
         return redirect()->route('penjadwalan-ulang.index')->with('success', 'Penjadwalan ulang berhasil diperbarui.');
     }

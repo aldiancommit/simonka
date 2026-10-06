@@ -1,94 +1,184 @@
 @extends('layouts.admin')
+
 @section('title', 'Jadwal Kegiatan')
 @section('banner_title', 'Jadwal Kegiatan Resmi')
-@section('banner_subtitle', 'Manajemen daftar jadwal kegiatan pimpinan')
+@section('banner_subtitle', 'Manajemen daftar jadwal agenda dan kegiatan resmi pimpinan.')
+
+@section('banner_action')
+    <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary" wire:navigate>
+        <i class="fas fa-plus"></i> Tambah Jadwal
+    </a>
+@endsection
+
 @section('content')
-<div class="card shadow-sm border-0">
-    <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom-0 pt-4 pb-0">
-        <div class="header-title">
-            <h4 class="card-title mb-0">Daftar Jadwal Kegiatan</h4>
+<div class="glass-card p-4 p-md-5 simonka-fade-in">
+    <!-- Header with Search & Quick Filter -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h4 class="fw-bolder mb-1 text-dark tracking-tight">Daftar Jadwal Kegiatan</h4>
+            <p class="text-muted small mb-0">Total: {{ $jadwalKegiatans->total() }} kegiatan pimpinan tercatat</p>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <form method="GET" class="d-flex">
-                <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari..." value="{{ request('search') }}">
-                <button type="submit" class="btn btn-sm btn-outline-primary ms-2">Cari</button>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <form method="GET" class="d-flex align-items-center gap-2 flex-grow-1 flex-sm-grow-0">
+                <div class="position-relative w-100" style="min-width: 220px;">
+                    <i class="fas fa-search position-absolute text-muted" style="left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.85rem;"></i>
+                    <input type="text" name="search" class="form-control ps-5 py-2 glass-pill text-dark w-100" placeholder="Cari kegiatan / lokasi..." value="{{ request('search') }}">
+                </div>
+                <button type="submit" class="btn btn-fundflow-glass py-2 px-3">
+                    <span class="fw-bold">Cari</span>
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('agenda.jadwal.index') }}" class="btn btn-fundflow-glass py-2 px-3" title="Reset filter" wire:navigate>
+                        <i class="fas fa-times"></i>
+                    </a>
+                @endif
             </form>
-            <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-sm btn-primary text-nowrap" wire:navigate>+ Tambah</a>
+            <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary py-2 px-3.5 d-inline-flex align-items-center gap-1.5" wire:navigate>
+                <span class="fw-bold">Tambah Jadwal</span>
+            </a>
         </div>
     </div>
-    <div class="card-body p-0 mt-3">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+    @if(session('success'))
+        <div class="glass-card-subtle p-3 rounded-3 mb-4 border-start border-4 border-success d-flex align-items-center justify-content-between" role="alert">
+            <div class="d-flex align-items-center gap-2 text-dark font-medium small">
+                <i class="fas fa-check-circle text-success fs-5"></i>
+                <span>{{ session('success') }}</span>
             </div>
-        @endif
-        <div class="table-responsive">
-            <table class="table table-hover table-striped mb-0 align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th class="text-nowrap" style="width: 50px;">No</th>
-                        <th class="text-nowrap">Nama Kegiatan</th>
-                        <th class="text-nowrap">Tanggal & Waktu</th>
-                        <th>Lokasi</th>
-                        <th class="text-nowrap text-center">Status</th>
-                        <th class="text-nowrap text-end" style="width: 150px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($jadwalKegiatans as $index => $jadwal)
-                    <tr>
-                        <td class="text-nowrap">{{ $jadwalKegiatans->firstItem() + $index }}</td>
-                        <td class="fw-semibold">
-                            <span class="d-inline-block text-truncate" style="max-width: 250px;" title="{{ $jadwal->nama_kegiatan }}">
-                                {{ $jadwal->nama_kegiatan }}
-                            </span>
-                        </td>
-                        <td class="text-nowrap">
-                            <div class="d-flex flex-column">
-                                <span>{{ $jadwal->tanggal->format('d/m/Y') }}</span>
-                                <small class="text-muted">{{ date('H:i', strtotime($jadwal->waktu_mulai)) }} - {{ $jadwal->waktu_selesai ? date('H:i', strtotime($jadwal->waktu_selesai)) : 'Selesai' }}</small>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="d-inline-block text-truncate text-muted" style="max-width: 200px;" title="{{ $jadwal->lokasi }}">
-                                {{ $jadwal->lokasi ?: '-' }}
-                            </span>
-                        </td>
-                        <td class="text-nowrap text-center">
-                            @php
-                                $badge = match($jadwal->status) {
-                                    'Terjadwal' => 'info',
-                                    'Berlangsung' => 'primary',
-                                    'Selesai' => 'success',
-                                    'Dibatalkan' => 'secondary',
-                                    default => 'light'
-                                };
-                            @endphp
-                            <span class="badge bg-{{ $badge }}">{{ $jadwal->status }}</span>
-                        </td>
-                        <td class="text-nowrap text-end">
-                            <div class="d-flex justify-content-end gap-1">
-                                <a href="{{ route('agenda.jadwal.edit', $jadwal) }}" class="btn btn-sm btn-info" wire:navigate>Edit</a>
-                                <form action="{{ route('agenda.jadwal.destroy', $jadwal) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="text-center py-4 text-muted">Tidak ada jadwal kegiatan.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+    @endif
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 50px;">No</th>
+                    <th>Nama Kegiatan</th>
+                    <th>Tanggal & Waktu</th>
+                    <th>Lokasi</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-end" style="width: 180px;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($jadwalKegiatans as $index => $jadwal)
+                <tr>
+                    <td class="text-center text-muted fw-bold">{{ $jadwalKegiatans->firstItem() + $index }}</td>
+                    <td>
+                        <div class="fw-bold text-dark">{{ \Illuminate\Support\Str::limit($jadwal->nama_kegiatan, 32) }}</div>
+                        @if($jadwal->keterangan)
+                            <span class="text-muted small text-truncate d-block" style="max-width: 280px;">{{ $jadwal->keterangan }}</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="fw-bold text-dark">{{ $jadwal->tanggal->format('d/m/Y') }}</div>
+                        <span class="text-muted small">{{ date('H:i', strtotime($jadwal->waktu_mulai)) }} - {{ $jadwal->waktu_selesai ? date('H:i', strtotime($jadwal->waktu_selesai)) : 'Selesai' }}</span>
+                    </td>
+                    <td>
+                        <span class="text-slate-700 fw-medium">
+                            <i class="fas fa-map-marker-alt text-muted me-1"></i>{{ $jadwal->lokasi ?: '-' }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        @php
+                            $badge = match($jadwal->status) {
+                                'Terjadwal' => 'bg-soft-info',
+                                'Berlangsung' => 'bg-soft-primary',
+                                'Selesai' => 'bg-soft-success',
+                                'Dibatalkan' => 'bg-soft-secondary',
+                                default => 'bg-soft-secondary'
+                            };
+                        @endphp
+                        <span class="badge {{ $badge }}">{{ $jadwal->status }}</span>
+                    </td>
+                    <td class="text-end">
+                        <div class="dropdown dropstart d-inline-block">
+                            <!-- Tombol Aksi Pembuka -->
+                            <button class="btn btn-fundflow-glass py-1.5 px-3 rounded-pill d-inline-flex align-items-center gap-2" 
+                                    type="button" 
+                                    data-bs-toggle="dropdown" 
+                                    data-bs-popper-config='{"strategy": "fixed"}'
+                                    aria-expanded="false" 
+                                    title="Opsi">
+                                <i class="fas fa-ellipsis-v text-muted fs-6"></i>
+                                <span class="fw-bold fs-6">⋯</span>
+                                <i class="fas fa-caret-down text-muted fs-6"></i>
+                            </button>
+
+                            <!-- Popup Card Menu (Melayang Keluar Tabel) -->
+                            <ul class="dropdown-menu glass-card shadow-lg border-0 p-2" 
+                                style="min-width: 150px; z-index: 9999;">
+                                
+                                <!-- Detail -->
+                                <li>
+                                    <a href="{{ route('agenda.jadwal.show', ['jadwal' => $jadwal]) }}" 
+                                    class="dropdown-item rounded-2 small py-1.5 px-2 d-flex align-items-center gap-2" 
+                                    wire:navigate>
+                                        <i class="fas fa-eye text-primary fa-fw"></i>
+                                        <span>Detail</span>
+                                    </a>
+                                </li>
+
+                                <!-- Edit -->
+                                <li>
+                                    <a href="{{ route('agenda.jadwal.edit', ['jadwal' => $jadwal]) }}" 
+                                    class="dropdown-item rounded-2 small py-1.5 px-2 d-flex align-items-center gap-2" 
+                                    wire:navigate>
+                                        <i class="fas fa-edit text-info fa-fw"></i>
+                                        <span>Edit</span>
+                                    </a>
+                                </li>
+
+                                <li><hr class="dropdown-divider my-1 opacity-25"></li>
+
+                                <!-- Hapus -->
+                                <li>
+                                    <form action="{{ route('agenda.jadwal.destroy', ['jadwal' => $jadwal]) }}" 
+                                        method="POST" 
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal kegiatan ini?');" 
+                                        class="m-0">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="dropdown-item rounded-2 small py-1.5 px-2 text-danger d-flex align-items-center gap-2">
+                                            <i class="fas fa-trash-alt fa-fw"></i>
+                                            <span>Hapus</span>
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <h6 class="fw-bold text-dark mb-1">Tidak ada jadwal kegiatan</h6>
+                        <p class="text-muted small mb-3">
+                            @if(request('search'))
+                                Pencarian dengan kata kunci "{{ request('search') }}" tidak menemukan hasil.
+                            @else
+                                Belum ada data agenda kegiatan resmi yang tersimpan.
+                            @endif
+                        </p>
+                        @if(request('search'))
+                            <a href="{{ route('agenda.jadwal.index') }}" class="btn btn-fundflow-glass btn-sm" wire:navigate>Reset Pencarian</a>
+                        @else
+                            <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary py-1 px-2 d-inline-flex align-items-center gap-1.5" wire:navigate>Tambah Jadwal Pertama</a>
+                        @endif
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
-    <div class="card-footer bg-white border-top-0 pt-3 pb-3">
+
+    @if($jadwalKegiatans->hasPages())
+    <div class="pt-4 mt-2 d-flex justify-content-center">
         {{ $jadwalKegiatans->withQueryString()->links('pagination::bootstrap-5') }}
     </div>
+    @endif
 </div>
 @endsection

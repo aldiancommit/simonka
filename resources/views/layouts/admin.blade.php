@@ -12,40 +12,30 @@
     </div>
     <!-- Loader End -->
 
-    <!-- Sidebar Start -->
-    @include('partials.sidebar')
-    <!-- Sidebar End -->
+    <!-- App Shell Wrapper (FundFlow Architecture) -->
+    <div class="simonka-app-shell">
+        <!-- Sidebar Backdrop for Mobile -->
+        <div class="simonka-sidebar-backdrop" data-toggle="sidebar"></div>
 
-    <!-- Main Content Start -->
-    <main class="main-content">
-        <div class="position-relative iq-banner">
-            <!-- Navbar Start -->
-            @include('partials.navbar')
-            <!-- Navbar End -->
+        <!-- Left Sidebar Navigation -->
+        @include('partials.sidebar')
 
-            <!-- Header Banner Start -->
-            @hasSection('header-banner')
-                @yield('header-banner')
-            @else
-                @include('partials.header-banner')
-            @endif
-            <!-- Header Banner End -->
+        <!-- Main Workspace Container -->
+        <div class="simonka-workspace">
+            <!-- Unified Top Header -->
+            @include('partials.header')
+
+            <!-- Page Content Area -->
+            <main class="simonka-content">
+                @yield('content')
+            </main>
+
+            <!-- Workspace Footer -->
+            @include('partials.footer')
         </div>
-
-        <!-- Content Inner Start -->
-        <div class="container-fluid content-inner mt-n5 py-0">
-            @yield('content')
-        </div>
-        <!-- Content Inner End -->
-
-        <!-- Footer Start -->
-        @include('partials.footer')
-        <!-- Footer End -->
-    </main>
-    <!-- Main Content End -->
+    </div>
 
     <!-- Scripts Start -->
     @include('partials.scripts')
-    <!-- Scripts End -->
 </body>
 </html>

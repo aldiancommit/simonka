@@ -13,10 +13,12 @@ class JadwalKegiatanController extends Controller
     {
         $query = JadwalKegiatan::query();
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('nama_kegiatan', 'like', "%{$search}%")
-                ->orWhere('lokasi', 'like', "%{$search}%");
+            $query->where(function ($query) use ($search) {
+                $query->where('nama_kegiatan', 'like', "%{$search}%")
+                    ->orWhere('lokasi', 'like', "%{$search}%");
+            });
         }
 
         $jadwalKegiatans = $query->latest('tanggal')->paginate(10);
@@ -36,26 +38,26 @@ class JadwalKegiatanController extends Controller
         return redirect()->route('agenda.jadwal.index')->with('success', 'Jadwal Kegiatan berhasil ditambahkan.');
     }
 
-    public function show(JadwalKegiatan $jadwalKegiatan)
+    public function show(JadwalKegiatan $jadwal)
     {
-        return view('agenda.jadwal.show', compact('jadwalKegiatan'));
+        return view('agenda.jadwal.show', ['jadwalKegiatan' => $jadwal]);
     }
 
-    public function edit(JadwalKegiatan $jadwalKegiatan)
+    public function edit(JadwalKegiatan $jadwal)
     {
-        return view('agenda.jadwal.edit', compact('jadwalKegiatan'));
+        return view('agenda.jadwal.edit', ['jadwalKegiatan' => $jadwal]);
     }
 
-    public function update(UpdateJadwalKegiatanRequest $request, JadwalKegiatan $jadwalKegiatan)
+    public function update(UpdateJadwalKegiatanRequest $request, JadwalKegiatan $jadwal)
     {
-        $jadwalKegiatan->update($request->validated());
+        $jadwal->update($request->validated());
 
         return redirect()->route('agenda.jadwal.index')->with('success', 'Jadwal Kegiatan berhasil diperbarui.');
     }
 
-    public function destroy(JadwalKegiatan $jadwalKegiatan)
+    public function destroy(JadwalKegiatan $jadwal)
     {
-        $jadwalKegiatan->delete();
+        $jadwal->delete();
 
         return redirect()->route('agenda.jadwal.index')->with('success', 'Jadwal Kegiatan berhasil dihapus.');
     }

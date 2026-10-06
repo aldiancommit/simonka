@@ -13,11 +13,13 @@ class KonsultasiController extends Controller
     {
         $query = Konsultasi::query();
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('nama_pemohon', 'like', "%{$search}%")
-                ->orWhere('instansi', 'like', "%{$search}%")
-                ->orWhere('perihal', 'like', "%{$search}%");
+            $query->where(function ($query) use ($search) {
+                $query->where('nama_pemohon', 'like', "%{$search}%")
+                    ->orWhere('instansi', 'like', "%{$search}%")
+                    ->orWhere('perihal', 'like', "%{$search}%");
+            });
         }
 
         $konsultasis = $query->latest()->paginate(10);

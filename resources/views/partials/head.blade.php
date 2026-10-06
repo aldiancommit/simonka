@@ -7,6 +7,11 @@
 <!-- Favicon -->
 <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
 
+<!-- Google Fonts: Plus Jakarta Sans (FundFlow Design System) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <!-- Library / Plugin Css Build -->
 <link rel="stylesheet" href="{{ asset('assets/css/core/libs.min.css') }}">
 
@@ -29,7 +34,9 @@
 <link rel="stylesheet" href="{{ asset('assets/css/rtl.min.css') }}">
 
 <!-- SIMONKA Custom Sidebar & Layout Styles -->
-<link rel="stylesheet" href="{{ asset('assets/css/simonka.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/simonka.css') }}?v={{ filemtime(public_path('assets/css/simonka.css')) }}">
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
 
 @livewireStyles
 

@@ -666,7 +666,7 @@
         buttonText: {
             prev: "mundur",
             next: "maju",
-            today: "hari ini",
+            today: "Hari ini",
             month: "Bulan",
             week: "Minggu",
             day: "Hari",
@@ -897,7 +897,7 @@
         buttonText: {
             prev: "Sebelum",
             next: "Selepas",
-            today: "hari ini",
+            today: "Hari ini",
             month: "Bulan",
             week: "Minggu",
             day: "Hari",

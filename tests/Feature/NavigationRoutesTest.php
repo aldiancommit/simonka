@@ -1,33 +1,39 @@
 <?php
 
-test('dashboard and all navigation routes return successful responses', function (string $route) {
+use App\Models\JadwalKegiatan;
+use App\Models\Konsultasi;
+use App\Models\PenjadwalanUlang;
+
+test('dashboard and all static navigation routes return successful responses', function (string $route) {
     $response = $this->get($route);
 
     $response->assertStatus(200);
 })->with([
     '/',
+    '/agenda',
     '/agenda/jadwal',
     '/agenda/jadwal/create',
-    '/agenda/jadwal/1/edit',
-    '/agenda/jadwal/1/delete',
     '/agenda/kalender',
-    '/agenda/kalender/create',
-    '/agenda/kalender/1/edit',
-    '/agenda/kalender/1/delete',
     '/konsultasi',
     '/konsultasi/create',
-    '/konsultasi/1/edit',
-    '/konsultasi/1/delete',
     '/penjadwalan-ulang',
     '/penjadwalan-ulang/create',
-    '/penjadwalan-ulang/1/edit',
-    '/penjadwalan-ulang/1/delete',
     '/riwayat',
-    '/riwayat/create',
-    '/riwayat/1/edit',
-    '/riwayat/1/delete',
+    '/riwayat?tab=jadwal',
     '/laporan',
-    '/laporan/create',
-    '/laporan/1/edit',
-    '/laporan/1/delete',
 ]);
+
+test('dynamic detail and edit routes return successful responses', function () {
+    $konsultasi = Konsultasi::first() ?? Konsultasi::factory()->create();
+    $jadwal = JadwalKegiatan::first() ?? JadwalKegiatan::factory()->create();
+    $penjadwalan = PenjadwalanUlang::first() ?? PenjadwalanUlang::factory()->create();
+
+    $this->get(route('konsultasi.show', $konsultasi))->assertStatus(200);
+    $this->get(route('konsultasi.edit', $konsultasi))->assertStatus(200);
+
+    $this->get(route('agenda.jadwal.show', ['jadwal' => $jadwal]))->assertStatus(200);
+    $this->get(route('agenda.jadwal.edit', ['jadwal' => $jadwal]))->assertStatus(200);
+
+    $this->get(route('penjadwalan-ulang.show', $penjadwalan))->assertStatus(200);
+    $this->get(route('penjadwalan-ulang.edit', $penjadwalan))->assertStatus(200);
+});

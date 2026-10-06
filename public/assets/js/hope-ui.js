@@ -317,34 +317,46 @@ const loaderInit = () => {
 /*---------------------------------------------------------------------
               Sidebar Toggle
 -----------------------------------------------------------------------*/
-const sidebarToggle = (elem) => {
-  elem.addEventListener('click', (e) => {
-    const sidebar = document.querySelector('.sidebar')
-    if (sidebar.classList.contains('sidebar-mini')) {
-      sidebar.classList.remove('sidebar-mini')
-    } else {
-      sidebar.classList.add('sidebar-mini')
+const updateActiveSidebarItems = () => {
+  const sidebar = document.querySelector('.sidebar-default')
+
+  if (sidebar === null) {
+    return
+  }
+
+  const sidebarActiveItem = sidebar.querySelectorAll('.active')
+  Array.from(sidebarActiveItem, (elem) => {
+    const childMenu = elem.closest('ul')
+
+    if (childMenu && !childMenu.classList.contains('iq-main-menu')) {
+      childMenu.classList.add('show')
+      const parentMenu = childMenu.closest('li')?.querySelector('.nav-link')
+
+      if (parentMenu) {
+        parentMenu.classList.remove('collapsed')
+        parentMenu.setAttribute('aria-expanded', 'true')
+      }
     }
   })
 }
 
-const sidebarToggleBtn = document.querySelectorAll('[data-toggle="sidebar"]')
-const sidebar = document.querySelector('.sidebar-default')
-if (sidebar !== null) {
-  const sidebarActiveItem = sidebar.querySelectorAll('.active')
-  Array.from(sidebarActiveItem, (elem) => {
-    if (!elem.closest('ul').classList.contains('iq-main-menu')) {
-      const childMenu = elem.closest('ul')
-      childMenu.classList.add('show')
-      const parentMenu = childMenu.closest('li').querySelector('.nav-link')
-      parentMenu.classList.add('collapsed')
-      parentMenu.setAttribute('aria-expanded', true)
+document.addEventListener('click', (event) => {
+  const sidebarToggle = event.target.closest('[data-toggle="sidebar"]')
+
+  if (sidebarToggle) {
+    if (window.innerWidth >= 1200) {
+      document.body.classList.toggle('sidebar-mini')
+      document.querySelector('.simonka-sidebar')?.classList.toggle('sidebar-mini')
+      document.querySelector('.sidebar')?.classList.toggle('sidebar-mini')
+    } else {
+      document.body.classList.toggle('sidebar-main')
+      document.querySelector('.simonka-sidebar')?.classList.toggle('sidebar-open')
     }
-  })
-}
-Array.from(sidebarToggleBtn, (sidebarBtn) => {
-  sidebarToggle(sidebarBtn)
+  }
 })
+
+document.addEventListener('DOMContentLoaded', updateActiveSidebarItems)
+document.addEventListener('livewire:navigated', updateActiveSidebarItems)
 /*---------------------------------------------------------------------------
                             Back To Top
 ----------------------------------------------------------------------------*/

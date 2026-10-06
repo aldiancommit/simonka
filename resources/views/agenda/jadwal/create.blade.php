@@ -1,54 +1,75 @@
 @extends('layouts.admin')
+
 @section('title', 'Tambah Jadwal Kegiatan')
-@section('banner_title', 'Jadwal Kegiatan')
-@section('banner_subtitle', 'Tambah jadwal kegiatan baru')
+@section('banner_title', 'Tambah Jadwal Kegiatan')
+@section('banner_subtitle', 'Formulir pencatatan agenda atau kegiatan resmi pimpinan.')
+
+@section('banner_action')
+    <a href="{{ route('agenda.jadwal.index') }}" class="btn btn-fundflow-glass" wire:navigate>
+        <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
+    </a>
+@endsection
+
 @section('content')
-<div class="card">
-    <div class="card-header">
-        <div class="header-title">
-            <h4 class="card-title">Form Tambah Jadwal</h4>
+<div class="glass-card p-4 p-md-5 simonka-fade-in">
+    <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-white">
+        <div>
+            <h4 class="fw-bolder mb-1 text-dark tracking-tight">Form Jadwal Kegiatan</h4>
+            <p class="text-muted small mb-0">Lengkapi rincian kegiatan resmi pimpinan di bawah ini.</p>
         </div>
     </div>
-    <div class="card-body">
-        <form method="POST" action="{{ route('agenda.jadwal.store') }}">
-            @csrf
-            <div class="row">
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Nama Kegiatan <span class="text-danger">*</span></label>
-                    <input type="text" name="nama_kegiatan" class="form-control @error('nama_kegiatan') is-invalid @enderror" value="{{ old('nama_kegiatan') }}" required>
-                    @error('nama_kegiatan')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Tanggal <span class="text-danger">*</span></label>
-                    <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror" value="{{ old('tanggal') }}" required>
-                    @error('tanggal')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Waktu Mulai <span class="text-danger">*</span></label>
-                    <input type="time" name="waktu_mulai" class="form-control @error('waktu_mulai') is-invalid @enderror" value="{{ old('waktu_mulai') }}" required>
-                    @error('waktu_mulai')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Waktu Selesai</label>
-                    <input type="time" name="waktu_selesai" class="form-control @error('waktu_selesai') is-invalid @enderror" value="{{ old('waktu_selesai') }}">
-                    @error('waktu_selesai')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Lokasi</label>
-                    <input type="text" name="lokasi" class="form-control @error('lokasi') is-invalid @enderror" value="{{ old('lokasi') }}">
-                    @error('lokasi')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Keterangan</label>
-                    <textarea name="keterangan" class="form-control @error('keterangan') is-invalid @enderror" rows="3">{{ old('keterangan') }}</textarea>
-                    @error('keterangan')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
+
+    <form method="POST" action="{{ route('agenda.jadwal.store') }}">
+        @csrf
+        
+        <div class="row mb-4">
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Nama Kegiatan / Agenda <span class="text-danger">*</span></label>
+                <input type="text" name="nama_kegiatan" class="form-control @error('nama_kegiatan') is-invalid @enderror" value="{{ old('nama_kegiatan') }}" placeholder="Contoh: Rapat Koordinasi Bersama Gubernur Jawa Barat" required>
+                @error('nama_kegiatan')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Simpan</button>
-                <a href="{{ route('agenda.jadwal.index') }}" class="btn btn-light" wire:navigate>Batal</a>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Tanggal Kegiatan <span class="text-danger">*</span></label>
+                <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror" value="{{ old('tanggal', date('Y-m-d')) }}" required>
+                @error('tanggal')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
-        </form>
-    </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Waktu Mulai <span class="text-danger">*</span></label>
+                <input type="time" name="waktu_mulai" class="form-control @error('waktu_mulai') is-invalid @enderror" value="{{ old('waktu_mulai', '08:30') }}" required>
+                @error('waktu_mulai')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Waktu Selesai</label>
+                <input type="time" name="waktu_selesai" class="form-control @error('waktu_selesai') is-invalid @enderror" value="{{ old('waktu_selesai') }}">
+                @error('waktu_selesai')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="col-md-8 mb-3">
+                <label class="form-label">Lokasi / Ruangan</label>
+                <input type="text" name="lokasi" class="form-control @error('lokasi') is-invalid @enderror" value="{{ old('lokasi') }}" placeholder="Contoh: Gedung Sate / Ruang Rapat Pimpinan">
+                @error('lokasi')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Status Kegiatan <span class="text-danger">*</span></label>
+                <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                    @foreach(['Terjadwal', 'Berlangsung', 'Selesai', 'Dibatalkan'] as $status)
+                        <option value="{{ $status }}" {{ old('status', 'Terjadwal') === $status ? 'selected' : '' }}>{{ $status }}</option>
+                    @endforeach
+                </select>
+                @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Keterangan / Dresscode / Dokumen Terkait</label>
+                <textarea name="keterangan" class="form-control @error('keterangan') is-invalid @enderror" rows="3" placeholder="Tambahkan catatan kelengkapan, pakaian dinas, atau informasi tambahan lainnya">{{ old('keterangan') }}</textarea>
+                @error('keterangan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 pt-3 border-top border-white">
+            <a href="{{ route('agenda.jadwal.index') }}" class="btn btn-fundflow-glass" wire:navigate>Batal</a>
+            <button type="submit" class="btn btn-fundflow-primary px-4">
+                <i class="fas fa-save me-1"></i> Simpan Jadwal
+            </button>
+        </div>
+    </form>
 </div>
 @endsection
