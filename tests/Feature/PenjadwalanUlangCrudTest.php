@@ -7,6 +7,7 @@ test('penjadwalan ulang can be created with valid data', function () {
     $konsultasi = Konsultasi::factory()->create([
         'tanggal_konsultasi' => now()->addDays(5)->format('Y-m-d'),
         'waktu_mulai' => '09:00',
+        'status' => 'Disetujui',
     ]);
 
     $data = [
@@ -35,6 +36,7 @@ test('approving penjadwalan ulang synchronizes konsultasi schedule atomically', 
         'tanggal_konsultasi' => now()->addDays(4)->format('Y-m-d'),
         'waktu_mulai' => '09:00',
         'waktu_selesai' => '10:00',
+        'status' => 'Disetujui',
     ]);
 
     $pu = PenjadwalanUlang::factory()->create([

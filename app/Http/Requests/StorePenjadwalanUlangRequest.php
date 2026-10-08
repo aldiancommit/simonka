@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePenjadwalanUlangRequest extends FormRequest
 {
@@ -14,8 +15,10 @@ class StorePenjadwalanUlangRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'konsultasi_id' => 'required|exists:konsultasis,id',
-            'tanggal_lama' => 'required|date',
+            'konsultasi_id' => [
+                'required',
+                Rule::exists('konsultasis', 'id')->where('status', 'Disetujui'),
+            ],
             'tanggal_baru' => 'required|date|after_or_equal:today',
             'waktu_mulai_baru' => 'required|date_format:H:i',
             'waktu_selesai_baru' => 'nullable|date_format:H:i|after:waktu_mulai_baru',

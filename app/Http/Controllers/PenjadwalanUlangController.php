@@ -32,14 +32,19 @@ class PenjadwalanUlangController extends Controller
 
     public function create()
     {
-        $konsultasis = Konsultasi::latest()->get();
+        $konsultasis = Konsultasi::where('status', 'Disetujui')->latest()->get();
 
         return view('penjadwalan-ulang.create', compact('konsultasis'));
     }
 
     public function store(StorePenjadwalanUlangRequest $request)
     {
-        PenjadwalanUlang::create($request->validated());
+        $data = $request->validated();
+        $konsultasi = Konsultasi::findOrFail($data['konsultasi_id']);
+        $data['tanggal_lama'] = $konsultasi->tanggal_konsultasi;
+        $data['status'] = $data['status'] ?? 'Menunggu';
+
+        PenjadwalanUlang::create($data);
 
         return redirect()->route('penjadwalan-ulang.index')->with('success', 'Pengajuan penjadwalan ulang berhasil disimpan.');
     }
@@ -53,7 +58,10 @@ class PenjadwalanUlangController extends Controller
 
     public function edit(PenjadwalanUlang $penjadwalanUlang)
     {
-        $konsultasis = Konsultasi::latest()->get();
+        $konsultasis = Konsultasi::where('status', 'Disetujui')
+            ->orWhere('id', $penjadwalanUlang->konsultasi_id)
+            ->latest()
+            ->get();
 
         return view('penjadwalan-ulang.edit', compact('penjadwalanUlang', 'konsultasis'));
     }
@@ -63,15 +71,44 @@ class PenjadwalanUlangController extends Controller
         $data = $request->validated();
 
         DB::transaction(function () use ($penjadwalanUlang, $data): void {
-            $penjadwalanUlang->update($data);
+            /** @var Konsultasi $konsultasi */
+            $konsultasi = Konsultasi::where('id', $penjadwalanUlang->konsultasi_id)->lockForUpdate()->firstOrFail();
 
-            if ($penjadwalanUlang->status === 'Disetujui') {
-                $penjadwalanUlang->konsultasi()->update([
-                    'tanggal_konsultasi' => $penjadwalanUlang->tanggal_baru,
-                    'waktu_mulai' => $penjadwalanUlang->waktu_mulai_baru,
-                    'waktu_selesai' => $penjadwalanUlang->waktu_selesai_baru,
+            $oldStatus = $penjadwalanUlang->status;
+            $newStatus = $data['status'] ?? $oldStatus;
+
+            if ($newStatus === 'Disetujui') {
+                if ($oldStatus !== 'Disetujui' || empty($penjadwalanUlang->snapshot_tanggal_lama)) {
+                    $data['snapshot_tanggal_lama'] = $konsultasi->tanggal_konsultasi;
+                    $data['snapshot_waktu_mulai_lama'] = $konsultasi->waktu_mulai;
+                    $data['snapshot_waktu_selesai_lama'] = $konsultasi->waktu_selesai;
+                }
+
+                $newWaktuSelesai = $data['waktu_selesai_baru'] ?? $konsultasi->waktu_selesai;
+
+                $konsultasi->update([
+                    'tanggal_konsultasi' => $data['tanggal_baru'] ?? $penjadwalanUlang->tanggal_baru,
+                    'waktu_mulai' => $data['waktu_mulai_baru'] ?? $penjadwalanUlang->waktu_mulai_baru,
+                    'waktu_selesai' => $newWaktuSelesai,
+                ]);
+
+                PenjadwalanUlang::where('konsultasi_id', $konsultasi->id)
+                    ->where('id', '!=', $penjadwalanUlang->id)
+                    ->where('status', 'Menunggu')
+                    ->update(['status' => 'Ditolak']);
+            } elseif ($oldStatus === 'Disetujui' && $newStatus === 'Ditolak') {
+                $revertDate = $penjadwalanUlang->snapshot_tanggal_lama ?? $penjadwalanUlang->tanggal_lama;
+                $revertStart = $penjadwalanUlang->snapshot_waktu_mulai_lama ?? $konsultasi->waktu_mulai;
+                $revertEnd = $penjadwalanUlang->snapshot_waktu_selesai_lama ?? $konsultasi->waktu_selesai;
+
+                $konsultasi->update([
+                    'tanggal_konsultasi' => $revertDate,
+                    'waktu_mulai' => $revertStart,
+                    'waktu_selesai' => $revertEnd,
                 ]);
             }
+
+            $penjadwalanUlang->update($data);
         });
 
         return redirect()->route('penjadwalan-ulang.index')->with('success', 'Penjadwalan ulang berhasil diperbarui.');

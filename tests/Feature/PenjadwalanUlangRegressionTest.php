@@ -147,20 +147,81 @@ test('4. store reschedule populates tanggal_lama from consultation in database a
         ->and($savedReschedule->tanggal_lama->format('Y-m-d'))->toBe('2026-10-18');
 });
 
-test('5. cannot create reschedule for consultation with terminal status Ditolak Dibatalkan or Selesai', function (string $terminalStatus) {
+test('5. cannot create reschedule for consultation without Disetujui status', function (string $invalidStatus) {
     $konsultasi = Konsultasi::factory()->create([
         'tanggal_konsultasi' => '2026-10-18',
-        'status' => $terminalStatus,
+        'status' => $invalidStatus,
     ]);
 
     $response = $this->post(route('penjadwalan-ulang.store'), [
         'konsultasi_id' => $konsultasi->id,
-        'tanggal_lama' => '2026-10-18',
         'tanggal_baru' => '2026-10-28',
         'waktu_mulai_baru' => '10:00',
-        'alasan' => 'Reschedule pada konsultasi yang sudah non-aktif',
+        'alasan' => 'Reschedule pada konsultasi yang bukan Disetujui',
     ]);
 
     $response->assertSessionHasErrors(['konsultasi_id']);
     expect(PenjadwalanUlang::where('konsultasi_id', $konsultasi->id)->count())->toBe(0);
-})->with(['Ditolak', 'Dibatalkan', 'Selesai']);
+})->with(['Menunggu', 'Ditolak', 'Dibatalkan', 'Selesai']);
+
+test('6. multiple saves with Disetujui status are idempotent and preserve original snapshot', function () {
+    $konsultasi = Konsultasi::factory()->create([
+        'tanggal_konsultasi' => '2026-10-15',
+        'waktu_mulai' => '09:00:00',
+        'waktu_selesai' => '10:00:00',
+        'status' => 'Disetujui',
+    ]);
+
+    $reschedule = PenjadwalanUlang::factory()->create([
+        'konsultasi_id' => $konsultasi->id,
+        'tanggal_lama' => '2026-10-15',
+        'tanggal_baru' => '2026-10-22',
+        'waktu_mulai_baru' => '13:00',
+        'waktu_selesai_baru' => '14:00',
+        'status' => 'Menunggu',
+    ]);
+
+    // 1st approve
+    $this->put(route('penjadwalan-ulang.update', $reschedule), [
+        'konsultasi_id' => $konsultasi->id,
+        'tanggal_lama' => '2026-10-15',
+        'tanggal_baru' => '2026-10-22',
+        'waktu_mulai_baru' => '13:00',
+        'waktu_selesai_baru' => '14:00',
+        'alasan' => 'Persetujuan pertama',
+        'status' => 'Disetujui',
+    ]);
+
+    $reschedule->refresh();
+    expect($reschedule->snapshot_tanggal_lama->format('Y-m-d'))->toBe('2026-10-15')
+        ->and($reschedule->snapshot_waktu_mulai_lama)->toBe('09:00:00');
+
+    // 2nd save with Disetujui (e.g. updating note or saving again)
+    $this->put(route('penjadwalan-ulang.update', $reschedule), [
+        'konsultasi_id' => $konsultasi->id,
+        'tanggal_lama' => '2026-10-15',
+        'tanggal_baru' => '2026-10-25',
+        'waktu_mulai_baru' => '14:00',
+        'waktu_selesai_baru' => '15:00',
+        'alasan' => 'Pembaruan catatan persetujuan',
+        'status' => 'Disetujui',
+    ]);
+
+    $reschedule->refresh();
+    // Snapshot should STILL preserve the original before-reschedule date (2026-10-15), not 2026-10-22
+    expect($reschedule->snapshot_tanggal_lama->format('Y-m-d'))->toBe('2026-10-15')
+        ->and($reschedule->snapshot_waktu_mulai_lama)->toBe('09:00:00');
+});
+
+test('7. create view dropdown only displays consultations with status Disetujui', function () {
+    $approved = Konsultasi::factory()->create(['status' => 'Disetujui', 'nama_pemohon' => 'Pemohon Disetujui']);
+    $pending = Konsultasi::factory()->create(['status' => 'Menunggu', 'nama_pemohon' => 'Pemohon Menunggu']);
+    $rejected = Konsultasi::factory()->create(['status' => 'Ditolak', 'nama_pemohon' => 'Pemohon Ditolak']);
+
+    $response = $this->get(route('penjadwalan-ulang.create'));
+
+    $response->assertOk();
+    $response->assertSee($approved->nama_pemohon);
+    $response->assertDontSee($pending->nama_pemohon);
+    $response->assertDontSee($rejected->nama_pemohon);
+});

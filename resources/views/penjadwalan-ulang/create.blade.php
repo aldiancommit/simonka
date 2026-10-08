@@ -37,10 +37,9 @@
                         @error('konsultasi_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label">Tanggal Sebelumnya <span class="text-danger">*</span></label>
-                        <input type="date" name="tanggal_lama" id="tanggal_lama_input" class="form-control @error('tanggal_lama') is-invalid @enderror" value="{{ old('tanggal_lama') }}" required readonly style="background: rgba(255,255,255,0.4) !important;">
+                        <label class="form-label">Tanggal Sebelumnya</label>
+                        <input type="date" id="tanggal_lama_input" class="form-control" readonly disabled style="background: rgba(255,255,255,0.4) !important;">
                         <small class="text-muted">Terisi otomatis sesuai data konsultasi.</small>
-                        @error('tanggal_lama')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                 </div>
 
