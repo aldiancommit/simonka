@@ -24,9 +24,9 @@ test('dashboard and all static navigation routes return successful responses', f
 ]);
 
 test('dynamic detail and edit routes return successful responses', function () {
-    $konsultasi = Konsultasi::first() ?? Konsultasi::factory()->create();
-    $jadwal = JadwalKegiatan::first() ?? JadwalKegiatan::factory()->create();
-    $penjadwalan = PenjadwalanUlang::first() ?? PenjadwalanUlang::factory()->create();
+    $konsultasi = Konsultasi::factory()->create();
+    $jadwal = JadwalKegiatan::factory()->create();
+    $penjadwalan = PenjadwalanUlang::factory()->create();
 
     $this->get(route('konsultasi.show', $konsultasi))->assertStatus(200);
     $this->get(route('konsultasi.edit', $konsultasi))->assertStatus(200);

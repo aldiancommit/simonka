@@ -1,9 +1,6 @@
 <?php
 
 use App\Models\Konsultasi;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-
-uses(DatabaseTransactions::class);
 
 test('konsultasi can be created with valid data', function () {
     $data = [

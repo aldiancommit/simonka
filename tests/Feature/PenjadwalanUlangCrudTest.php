@@ -2,9 +2,6 @@
 
 use App\Models\Konsultasi;
 use App\Models\PenjadwalanUlang;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-
-uses(DatabaseTransactions::class);
 
 test('penjadwalan ulang can be created with valid data', function () {
     $konsultasi = Konsultasi::factory()->create([

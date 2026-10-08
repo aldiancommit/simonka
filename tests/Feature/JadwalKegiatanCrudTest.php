@@ -1,9 +1,6 @@
 <?php
 
 use App\Models\JadwalKegiatan;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-
-uses(DatabaseTransactions::class);
 
 test('jadwal kegiatan can be created with valid data', function () {
     $data = [
