@@ -8,6 +8,7 @@ use App\Models\Konsultasi;
 use App\Models\PenjadwalanUlang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class PenjadwalanUlangController extends Controller
 {
@@ -78,6 +79,12 @@ class PenjadwalanUlangController extends Controller
             $newStatus = $data['status'] ?? $oldStatus;
 
             if ($newStatus === 'Disetujui') {
+                if ($konsultasi->status !== 'Disetujui') {
+                    throw ValidationException::withMessages([
+                        'status' => 'Penjadwalan ulang tidak dapat disetujui karena permohonan konsultasi tidak berstatus Disetujui.',
+                    ]);
+                }
+
                 if ($oldStatus !== 'Disetujui' || empty($penjadwalanUlang->snapshot_tanggal_lama)) {
                     $data['snapshot_tanggal_lama'] = $konsultasi->tanggal_konsultasi;
                     $data['snapshot_waktu_mulai_lama'] = $konsultasi->waktu_mulai;
@@ -96,7 +103,7 @@ class PenjadwalanUlangController extends Controller
                     ->where('id', '!=', $penjadwalanUlang->id)
                     ->where('status', 'Menunggu')
                     ->update(['status' => 'Ditolak']);
-            } elseif ($oldStatus === 'Disetujui' && $newStatus === 'Ditolak') {
+            } elseif ($oldStatus === 'Disetujui' && $newStatus !== 'Disetujui') {
                 $revertDate = $penjadwalanUlang->snapshot_tanggal_lama ?? $penjadwalanUlang->tanggal_lama;
                 $revertStart = $penjadwalanUlang->snapshot_waktu_mulai_lama ?? $konsultasi->waktu_mulai;
                 $revertEnd = $penjadwalanUlang->snapshot_waktu_selesai_lama ?? $konsultasi->waktu_selesai;

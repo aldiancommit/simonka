@@ -225,3 +225,79 @@ test('7. create view dropdown only displays consultations with status Disetujui'
     $response->assertDontSee($pending->nama_pemohon);
     $response->assertDontSee($rejected->nama_pemohon);
 });
+
+test('8. cannot approve reschedule if parent consultation status is not Disetujui', function (string $parentStatus) {
+    $konsultasi = Konsultasi::factory()->create([
+        'tanggal_konsultasi' => '2026-10-15',
+        'status' => $parentStatus,
+    ]);
+
+    $reschedule = PenjadwalanUlang::factory()->create([
+        'konsultasi_id' => $konsultasi->id,
+        'tanggal_lama' => '2026-10-15',
+        'tanggal_baru' => '2026-10-22',
+        'waktu_mulai_baru' => '13:00',
+        'status' => 'Menunggu',
+    ]);
+
+    $response = $this->put(route('penjadwalan-ulang.update', $reschedule), [
+        'konsultasi_id' => $konsultasi->id,
+        'tanggal_lama' => '2026-10-15',
+        'tanggal_baru' => '2026-10-22',
+        'waktu_mulai_baru' => '13:00',
+        'alasan' => 'Mencoba menyetujui saat konsultasi tidak berstatus Disetujui',
+        'status' => 'Disetujui',
+    ]);
+
+    $response->assertSessionHasErrors(['status']);
+    $reschedule->refresh();
+    expect($reschedule->status)->toBe('Menunggu');
+})->with(['Menunggu', 'Ditolak', 'Dibatalkan', 'Selesai']);
+
+test('9. reverting reschedule from Disetujui to Menunggu restores previous consultation schedule', function () {
+    $konsultasi = Konsultasi::factory()->create([
+        'tanggal_konsultasi' => '2026-10-15',
+        'waktu_mulai' => '09:00:00',
+        'waktu_selesai' => '10:30:00',
+        'status' => 'Disetujui',
+    ]);
+
+    $reschedule = PenjadwalanUlang::factory()->create([
+        'konsultasi_id' => $konsultasi->id,
+        'tanggal_lama' => '2026-10-15',
+        'tanggal_baru' => '2026-10-22',
+        'waktu_mulai_baru' => '13:00',
+        'waktu_selesai_baru' => '14:30',
+        'status' => 'Menunggu',
+    ]);
+
+    // 1. Setujui reschedule
+    $this->put(route('penjadwalan-ulang.update', $reschedule), [
+        'konsultasi_id' => $konsultasi->id,
+        'tanggal_lama' => '2026-10-15',
+        'tanggal_baru' => '2026-10-22',
+        'waktu_mulai_baru' => '13:00',
+        'waktu_selesai_baru' => '14:30',
+        'alasan' => 'Dinas luar kota',
+        'status' => 'Disetujui',
+    ]);
+
+    $konsultasi->refresh();
+    expect($konsultasi->tanggal_konsultasi->format('Y-m-d'))->toBe('2026-10-22');
+
+    // 2. Ubah dari Disetujui kembali ke Menunggu
+    $this->put(route('penjadwalan-ulang.update', $reschedule), [
+        'konsultasi_id' => $konsultasi->id,
+        'tanggal_lama' => '2026-10-15',
+        'tanggal_baru' => '2026-10-22',
+        'waktu_mulai_baru' => '13:00',
+        'waktu_selesai_baru' => '14:30',
+        'alasan' => 'Perlu peninjauan ulang oleh admin',
+        'status' => 'Menunggu',
+    ]);
+
+    $konsultasi->refresh();
+    expect($konsultasi->tanggal_konsultasi->format('Y-m-d'))->toBe('2026-10-15')
+        ->and($konsultasi->waktu_mulai)->toBe('09:00:00')
+        ->and($konsultasi->waktu_selesai)->toBe('10:30:00');
+});
