@@ -6,12 +6,16 @@
 
 @section('banner_action')
     <div class="d-flex align-items-center gap-2">
+        @can('create', App\Models\Konsultasi::class)
         <a href="{{ route('konsultasi.create') }}" class="btn btn-fundflow-primary" wire:navigate>
             <i class="fas fa-plus"></i> Tambah Konsultasi
         </a>
+        @endcan
+        @can('create', App\Models\JadwalKegiatan::class)
         <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-glass" wire:navigate>
             <i class="fas fa-calendar-plus"></i> Jadwal Baru
         </a>
+        @endcan
     </div>
 @endsection
 
@@ -79,12 +83,16 @@
 
             <!-- Quick Action Shortcuts -->
             <div class="d-flex flex-column flex-sm-row flex-lg-column gap-2 w-100" style="max-width: 220px;">
+                @can('create', App\Models\Konsultasi::class)
                 <a href="{{ route('konsultasi.create') }}" class="btn btn-fundflow-primary w-100 py-2.5 text-center" wire:navigate>
                     <i class="fas fa-plus-circle me-1"></i> Ajukan Konsultasi
                 </a>
+                @endcan
+                @can('create', App\Models\JadwalKegiatan::class)
                 <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-glass w-100 py-2.5 text-center" wire:navigate>
                     <i class="fas fa-calendar-plus me-1"></i> Jadwalkan Agenda
                 </a>
+                @endcan
                 <a href="{{ route('penjadwalan-ulang.index') }}" class="btn btn-fundflow-glass w-100 py-2 text-center text-muted" wire:navigate style="font-size: 0.78rem;">
                     <i class="fas fa-clock me-1"></i> Review Reschedule
                 </a>

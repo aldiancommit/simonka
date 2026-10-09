@@ -5,9 +5,11 @@
 @section('banner_subtitle', 'Tampilan kalender terintegrasi seluruh agenda kegiatan resmi dan konsultasi pimpinan.')
 
 @section('banner_action')
-    <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary" wire:navigate>
-        <i class="fas fa-plus"></i> Tambah Jadwal Baru
-    </a>    
+    @can('create', App\Models\JadwalKegiatan::class)
+        <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary" wire:navigate>
+            <i class="fas fa-plus"></i> Tambah Jadwal Baru
+        </a>
+    @endcan
 @endsection
 
 @section('content')

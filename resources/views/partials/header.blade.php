@@ -14,6 +14,8 @@
 
         <!-- Right Section: Actions, Today's Date Pill, Profile Dropdown -->
         <div class="d-flex flex-wrap align-items-center justify-content-start justify-content-lg-end gap-2.5">
+            @yield('banner_action')
+
             {{-- User Profile Pill & Dropdown --}}
             <div class="dropdown">
                 <a class="nav-link py-2 px-3 glass-pill d-inline-flex align-items-center gap-2 text-decoration-none shadow-sm hover-top transition-all profile-trigger-btn" 
