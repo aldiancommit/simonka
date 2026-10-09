@@ -4,15 +4,6 @@
 @section('banner_title', 'Kalender Agenda')
 @section('banner_subtitle', 'Tampilan kalender terintegrasi seluruh agenda kegiatan resmi dan konsultasi pimpinan.')
 
-@section('banner_action')
-    @can('create', App\Models\JadwalKegiatan::class)
-        <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary" wire:navigate>
-            <i class="fas fa-plus"></i> Tambah Jadwal Baru
-        </a>
-    @endcan
-@endsection
-
-
 @section('content')
 <div class="row simonka-fade-in">
     <div class="col-12">
@@ -28,6 +19,11 @@
                     <span class="badge bg-soft-success"> Selesai</span>
                     <span class="badge bg-soft-warning"> Konsultasi</span>
                 </div>
+                @can('create', App\Models\JadwalKegiatan::class)
+                    <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-glass" wire:navigate>
+                        <i class="fas fa-plus"></i> Tambah Jadwal Baru
+                    </a>
+                @endcan
             </div>
             
             <div id="calendar" style="min-height: 640px;"></div>
