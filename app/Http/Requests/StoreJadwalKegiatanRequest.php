@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Models\JadwalKegiatan;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreJadwalKegiatanRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('create', JadwalKegiatan::class) ?? false;
     }
 
     public function rules(): array

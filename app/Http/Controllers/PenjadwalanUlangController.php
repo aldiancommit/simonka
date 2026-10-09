@@ -14,6 +14,8 @@ class PenjadwalanUlangController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', PenjadwalanUlang::class);
+
         $query = PenjadwalanUlang::with('konsultasi');
 
         if ($request->filled('search')) {
@@ -33,6 +35,8 @@ class PenjadwalanUlangController extends Controller
 
     public function create()
     {
+        $this->authorize('create', PenjadwalanUlang::class);
+
         $konsultasis = Konsultasi::where('status', 'Disetujui')->latest()->get();
 
         return view('penjadwalan-ulang.create', compact('konsultasis'));
@@ -40,10 +44,12 @@ class PenjadwalanUlangController extends Controller
 
     public function store(StorePenjadwalanUlangRequest $request)
     {
+        $this->authorize('create', PenjadwalanUlang::class);
+
         $data = $request->validated();
         $konsultasi = Konsultasi::findOrFail($data['konsultasi_id']);
         $data['tanggal_lama'] = $konsultasi->tanggal_konsultasi;
-        $data['status'] = $data['status'] ?? 'Menunggu';
+        $data['status'] = 'Menunggu';
 
         PenjadwalanUlang::create($data);
 
@@ -52,6 +58,8 @@ class PenjadwalanUlangController extends Controller
 
     public function show(PenjadwalanUlang $penjadwalanUlang)
     {
+        $this->authorize('view', $penjadwalanUlang);
+
         $penjadwalanUlang->load('konsultasi');
 
         return view('penjadwalan-ulang.show', compact('penjadwalanUlang'));
@@ -59,6 +67,8 @@ class PenjadwalanUlangController extends Controller
 
     public function edit(PenjadwalanUlang $penjadwalanUlang)
     {
+        $this->authorize('update', $penjadwalanUlang);
+
         $konsultasis = Konsultasi::where('status', 'Disetujui')
             ->orWhere('id', $penjadwalanUlang->konsultasi_id)
             ->latest()
@@ -69,6 +79,8 @@ class PenjadwalanUlangController extends Controller
 
     public function update(UpdatePenjadwalanUlangRequest $request, PenjadwalanUlang $penjadwalanUlang)
     {
+        $this->authorize('update', $penjadwalanUlang);
+
         $data = $request->validated();
 
         DB::transaction(function () use ($penjadwalanUlang, $data): void {
@@ -123,6 +135,8 @@ class PenjadwalanUlangController extends Controller
 
     public function destroy(PenjadwalanUlang $penjadwalanUlang)
     {
+        $this->authorize('delete', $penjadwalanUlang);
+
         $penjadwalanUlang->delete();
 
         return redirect()->route('penjadwalan-ulang.index')->with('success', 'Penjadwalan ulang berhasil dihapus.');

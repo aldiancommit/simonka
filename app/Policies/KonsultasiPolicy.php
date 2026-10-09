@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\Role;
 use App\Models\Konsultasi;
 use App\Models\User;
 
@@ -12,7 +13,7 @@ class KonsultasiPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->isActive();
     }
 
     /**
@@ -20,7 +21,7 @@ class KonsultasiPolicy
      */
     public function view(User $user, Konsultasi $konsultasi): bool
     {
-        return false;
+        return $user->isActive();
     }
 
     /**
@@ -28,7 +29,7 @@ class KonsultasiPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasRole([Role::Admin, Role::Sekretariat]);
     }
 
     /**
@@ -36,7 +37,7 @@ class KonsultasiPolicy
      */
     public function update(User $user, Konsultasi $konsultasi): bool
     {
-        return false;
+        return $user->hasRole([Role::Admin, Role::Pimpinan, Role::Sekretariat]);
     }
 
     /**
@@ -44,22 +45,6 @@ class KonsultasiPolicy
      */
     public function delete(User $user, Konsultasi $konsultasi): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Konsultasi $konsultasi): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Konsultasi $konsultasi): bool
-    {
-        return false;
+        return $user->hasRole(Role::Admin);
     }
 }

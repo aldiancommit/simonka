@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\PenjadwalanUlang;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -9,7 +10,7 @@ class StorePenjadwalanUlangRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('create', PenjadwalanUlang::class) ?? false;
     }
 
     public function rules(): array
@@ -23,7 +24,7 @@ class StorePenjadwalanUlangRequest extends FormRequest
             'waktu_mulai_baru' => 'required|date_format:H:i',
             'waktu_selesai_baru' => 'nullable|date_format:H:i|after:waktu_mulai_baru',
             'alasan' => 'required|string|max:2000',
-            'status' => 'nullable|in:Menunggu,Disetujui,Ditolak',
+            'status' => 'nullable|string',
         ];
     }
 }

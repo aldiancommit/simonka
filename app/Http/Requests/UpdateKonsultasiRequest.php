@@ -2,17 +2,90 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Role;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateKonsultasiRequest extends FormRequest
 {
     public function authorize(): bool
     {
+        $user = $this->user();
+        $konsultasi = $this->route('konsultasi');
+
+        if (! $user || ! $konsultasi) {
+            return false;
+        }
+
+        if (! $user->can('update', $konsultasi)) {
+            return false;
+        }
+
+        // Pimpinan: Strict Key Whitelist (HANYA status dan catatan, plus _token, _method)
+        if ($user->hasRole(Role::Pimpinan)) {
+            $allowedKeys = ['_token', '_method', 'status', 'catatan'];
+            $submittedKeys = array_keys($this->all());
+            $forbiddenKeys = array_diff($submittedKeys, $allowedKeys);
+
+            if (! empty($forbiddenKeys)) {
+                return false;
+            }
+        }
+
+        // Sekretariat:
+        if ($user->hasRole(Role::Sekretariat)) {
+            // Pada permohonan Menunggu: dilarang mengirim status Disetujui atau Ditolak
+            if ($konsultasi->status === 'Menunggu' && in_array($this->input('status'), ['Disetujui', 'Ditolak'])) {
+                return false;
+            }
+
+            // Pada permohonan Disetujui: dilarang mengirim status Ditolak
+            if ($konsultasi->status === 'Disetujui' && $this->input('status') === 'Ditolak') {
+                return false;
+            }
+
+            // Pada konsultasi berstatus Disetujui: dilarang mengubah tanggal_konsultasi, waktu_mulai, waktu_selesai
+            if ($konsultasi->status === 'Disetujui') {
+                if ($this->has('tanggal_konsultasi')) {
+                    $inputDate = Carbon::parse($this->input('tanggal_konsultasi'))->format('Y-m-d');
+                    $currentDate = Carbon::parse($konsultasi->tanggal_konsultasi)->format('Y-m-d');
+                    if ($inputDate !== $currentDate) {
+                        return false;
+                    }
+                }
+
+                if ($this->has('waktu_mulai')) {
+                    $inputStart = Carbon::parse($this->input('waktu_mulai'))->format('H:i');
+                    $currentStart = Carbon::parse($konsultasi->waktu_mulai)->format('H:i');
+                    if ($inputStart !== $currentStart) {
+                        return false;
+                    }
+                }
+
+                if ($this->has('waktu_selesai') && $this->input('waktu_selesai') !== null) {
+                    $inputEnd = Carbon::parse($this->input('waktu_selesai'))->format('H:i');
+                    $currentEnd = $konsultasi->waktu_selesai ? Carbon::parse($konsultasi->waktu_selesai)->format('H:i') : null;
+                    if ($inputEnd !== $currentEnd) {
+                        return false;
+                    }
+                }
+            }
+        }
+
         return true;
     }
 
     public function rules(): array
     {
+        $user = $this->user();
+
+        if ($user && $user->hasRole(Role::Pimpinan)) {
+            return [
+                'status' => 'required|in:Menunggu,Disetujui,Ditolak,Selesai,Dibatalkan',
+                'catatan' => 'nullable|string|max:2000',
+            ];
+        }
+
         return [
             'nama_pemohon' => 'required|string|max:255',
             'instansi' => 'nullable|string|max:255',

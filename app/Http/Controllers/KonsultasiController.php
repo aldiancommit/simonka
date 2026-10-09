@@ -11,6 +11,8 @@ class KonsultasiController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Konsultasi::class);
+
         $query = Konsultasi::query();
 
         if ($request->filled('search')) {
@@ -29,28 +31,41 @@ class KonsultasiController extends Controller
 
     public function create()
     {
+        $this->authorize('create', Konsultasi::class);
+
         return view('konsultasi.create');
     }
 
     public function store(StoreKonsultasiRequest $request)
     {
-        Konsultasi::create($request->validated());
+        $this->authorize('create', Konsultasi::class);
+
+        $data = $request->validated();
+        $data['status'] = 'Menunggu';
+
+        Konsultasi::create($data);
 
         return redirect()->route('konsultasi.index')->with('success', 'Konsultasi berhasil ditambahkan.');
     }
 
     public function show(Konsultasi $konsultasi)
     {
+        $this->authorize('view', $konsultasi);
+
         return view('konsultasi.show', compact('konsultasi'));
     }
 
     public function edit(Konsultasi $konsultasi)
     {
+        $this->authorize('update', $konsultasi);
+
         return view('konsultasi.edit', compact('konsultasi'));
     }
 
     public function update(UpdateKonsultasiRequest $request, Konsultasi $konsultasi)
     {
+        $this->authorize('update', $konsultasi);
+
         $konsultasi->update($request->validated());
 
         return redirect()->route('konsultasi.index')->with('success', 'Konsultasi berhasil diperbarui.');
@@ -58,6 +73,8 @@ class KonsultasiController extends Controller
 
     public function destroy(Konsultasi $konsultasi)
     {
+        $this->authorize('delete', $konsultasi);
+
         $konsultasi->delete();
 
         return redirect()->route('konsultasi.index')->with('success', 'Konsultasi berhasil dihapus.');

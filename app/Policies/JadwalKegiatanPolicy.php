@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\Role;
 use App\Models\JadwalKegiatan;
 use App\Models\User;
 
@@ -12,7 +13,7 @@ class JadwalKegiatanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->isActive();
     }
 
     /**
@@ -20,7 +21,7 @@ class JadwalKegiatanPolicy
      */
     public function view(User $user, JadwalKegiatan $jadwalKegiatan): bool
     {
-        return false;
+        return $user->isActive();
     }
 
     /**
@@ -28,7 +29,7 @@ class JadwalKegiatanPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasRole([Role::Admin, Role::Sekretariat]);
     }
 
     /**
@@ -36,7 +37,7 @@ class JadwalKegiatanPolicy
      */
     public function update(User $user, JadwalKegiatan $jadwalKegiatan): bool
     {
-        return false;
+        return $user->hasRole([Role::Admin, Role::Sekretariat]);
     }
 
     /**
@@ -44,22 +45,6 @@ class JadwalKegiatanPolicy
      */
     public function delete(User $user, JadwalKegiatan $jadwalKegiatan): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, JadwalKegiatan $jadwalKegiatan): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, JadwalKegiatan $jadwalKegiatan): bool
-    {
-        return false;
+        return $user->hasRole(Role::Admin);
     }
 }

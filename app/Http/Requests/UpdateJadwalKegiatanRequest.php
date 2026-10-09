@@ -8,7 +8,9 @@ class UpdateJadwalKegiatanRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $jadwal = $this->route('jadwal');
+
+        return $jadwal && ($this->user()?->can('update', $jadwal) ?? false);
     }
 
     public function rules(): array

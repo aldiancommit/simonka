@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Konsultasi;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreKonsultasiRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('create', Konsultasi::class) ?? false;
     }
 
     public function rules(): array
@@ -22,7 +23,7 @@ class StoreKonsultasiRequest extends FormRequest
             'tanggal_konsultasi' => 'required|date|after_or_equal:today',
             'waktu_mulai' => 'required|date_format:H:i',
             'waktu_selesai' => 'nullable|date_format:H:i|after:waktu_mulai',
-            'status' => 'nullable|in:Menunggu,Disetujui,Ditolak,Selesai,Dibatalkan',
+            'status' => 'nullable|string',
             'catatan' => 'nullable|string|max:2000',
         ];
     }
