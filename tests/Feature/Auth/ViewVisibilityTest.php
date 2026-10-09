@@ -130,3 +130,68 @@ test('8. DemoSeeder seeds 3 valid role users idempotently and respects password 
         ->and(User::where('email', 'pimpinan@simonka.test')->count())->toBe(1)
         ->and(User::where('email', 'sekretariat@simonka.test')->count())->toBe(1);
 });
+
+test('9. pimpinan on dashboard and kalender does not see links to konsultasi.create and agenda.jadwal.create while admin and sekretariat see them', function () {
+    $pimpinan = User::factory()->pimpinan()->create();
+    $sekretariat = User::factory()->sekretariat()->create();
+    $admin = User::factory()->admin()->create();
+
+    // Pimpinan on dashboard
+    $pimpinanDashboard = $this->actingAs($pimpinan)->get(route('dashboard'));
+    $pimpinanDashboard->assertDontSee(route('konsultasi.create'));
+    $pimpinanDashboard->assertDontSee(route('agenda.jadwal.create'));
+
+    // Pimpinan on calendar
+    $pimpinanCalendar = $this->actingAs($pimpinan)->get(route('agenda.kalender.index'));
+    $pimpinanCalendar->assertDontSee(route('agenda.jadwal.create'));
+
+    // Sekretariat on dashboard
+    $sekretariatDashboard = $this->actingAs($sekretariat)->get(route('dashboard'));
+    $sekretariatDashboard->assertSee(route('konsultasi.create'));
+    $sekretariatDashboard->assertSee(route('agenda.jadwal.create'));
+
+    // Sekretariat on calendar
+    $sekretariatCalendar = $this->actingAs($sekretariat)->get(route('agenda.kalender.index'));
+    $sekretariatCalendar->assertSee(route('agenda.jadwal.create'));
+
+    // Admin on dashboard
+    $adminDashboard = $this->actingAs($admin)->get(route('dashboard'));
+    $adminDashboard->assertSee(route('konsultasi.create'));
+    $adminDashboard->assertSee(route('agenda.jadwal.create'));
+
+    // Admin on calendar
+    $adminCalendar = $this->actingAs($admin)->get(route('agenda.kalender.index'));
+    $adminCalendar->assertSee(route('agenda.jadwal.create'));
+});
+
+test('10. pimpinan on empty index pages does not see create links or empty-state create buttons while admin and sekretariat see them', function () {
+    $pimpinan = User::factory()->pimpinan()->create();
+    $sekretariat = User::factory()->sekretariat()->create();
+
+    // Pimpinan on empty index pages
+    $pimpinanKonsultasi = $this->actingAs($pimpinan)->get(route('konsultasi.index'));
+    $pimpinanKonsultasi->assertDontSee(route('konsultasi.create'));
+    $pimpinanKonsultasi->assertDontSee('Tambah Konsultasi Pertama');
+
+    $pimpinanJadwal = $this->actingAs($pimpinan)->get(route('agenda.jadwal.index'));
+    $pimpinanJadwal->assertDontSee(route('agenda.jadwal.create'));
+    $pimpinanJadwal->assertDontSee('Tambah Jadwal Pertama');
+
+    $pimpinanPu = $this->actingAs($pimpinan)->get(route('penjadwalan-ulang.index'));
+    $pimpinanPu->assertDontSee(route('penjadwalan-ulang.create'));
+    $pimpinanPu->assertDontSee('Ajukan Reschedule Baru');
+
+    // Sekretariat on empty index pages
+    $sekretariatKonsultasi = $this->actingAs($sekretariat)->get(route('konsultasi.index'));
+    $sekretariatKonsultasi->assertSee(route('konsultasi.create'));
+    $sekretariatKonsultasi->assertSee('Tambah Konsultasi Pertama');
+
+    $sekretariatJadwal = $this->actingAs($sekretariat)->get(route('agenda.jadwal.index'));
+    $sekretariatJadwal->assertSee(route('agenda.jadwal.create'));
+    $sekretariatJadwal->assertSee('Tambah Jadwal Pertama');
+
+    $sekretariatPu = $this->actingAs($sekretariat)->get(route('penjadwalan-ulang.index'));
+    $sekretariatPu->assertSee(route('penjadwalan-ulang.create'));
+    $sekretariatPu->assertSee('Ajukan Reschedule Baru');
+});
+
