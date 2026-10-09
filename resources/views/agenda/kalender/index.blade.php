@@ -13,17 +13,27 @@
                     <h4 class="fw-bolder mb-1 text-dark tracking-tight">Kalender Terpadu</h4>
                     <p class="text-muted small mb-0">Klik pada nama agenda untuk meninjau rincian kegiatan</p>
                 </div>
-                <div class="d-flex gap-2 text-sm flex-wrap">
-                    <span class="badge bg-soft-info">Terjadwal</span>
-                    <span class="badge bg-soft-primary"> Berlangsung</span>
-                    <span class="badge bg-soft-success"> Selesai</span>
-                    <span class="badge bg-soft-warning"> Konsultasi</span>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+
+                    {{-- Badge Keterangan --}}
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <span class="badge bg-soft-info">Terjadwal</span>
+                        <span class="badge bg-soft-primary">Berlangsung</span>
+                        <span class="badge bg-soft-success">Selesai</span>
+                        <span class="badge bg-soft-warning">Konsultasi</span>
+                    </div>
+
+                    {{-- Tombol Tambah --}}
+                    @can('create', App\Models\JadwalKegiatan::class)
+                        <div>
+                            <a href="{{ route('agenda.jadwal.create') }}"
+                            class="btn btn-fundflow-glass"
+                            wire:navigate>
+                                Tambah Jadwal Baru
+                            </a>
+                        </div>
+                    @endcan
                 </div>
-                @can('create', App\Models\JadwalKegiatan::class)
-                    <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-glass" wire:navigate>
-                        <i class="fas fa-plus"></i> Tambah Jadwal Baru
-                    </a>
-                @endcan
             </div>
             
             <div id="calendar" style="min-height: 640px;"></div>
