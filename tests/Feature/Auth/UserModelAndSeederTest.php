@@ -37,7 +37,7 @@ test('2. role status and last_login_at are guarded from mass-assignment', functi
 
     // role should remain null because it is guarded from mass-assignment
     expect($user->role)->toBeNull()
-        ->and($user->status)->toBe(UserStatus::Active) // default from migration
+        ->and($user->status)->toBe(UserStatus::Inactive) // default from migration (fail closed)
         ->and($user->last_login_at)->toBeNull();
 });
 
