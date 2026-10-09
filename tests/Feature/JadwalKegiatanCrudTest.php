@@ -2,6 +2,10 @@
 
 use App\Models\JadwalKegiatan;
 
+beforeEach(function () {
+    $this->actingAsRole();
+});
+
 test('jadwal kegiatan can be created with valid data', function () {
     $data = [
         'nama_kegiatan' => 'Rapat Paripurna DPRD Prov. Jabar',

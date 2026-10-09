@@ -69,7 +69,7 @@ test('5. login fails with generic error for incorrect password', function () {
 });
 
 test('6. login fails with specific error if credentials match but status is inactive', function () {
-    $user = User::factory()->inactive()->admin()->create([
+    $user = User::factory()->admin()->inactive()->create([
         'password' => Hash::make('CorrectPassword123!@#'),
     ]);
 

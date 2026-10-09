@@ -5,6 +5,7 @@ use App\Models\PenjadwalanUlang;
 use Carbon\Carbon;
 
 beforeEach(function () {
+    $this->actingAsRole();
     Carbon::setTestNow(Carbon::parse('2026-10-08 10:00:00', 'Asia/Makassar'));
 });
 

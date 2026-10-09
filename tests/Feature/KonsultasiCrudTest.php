@@ -2,6 +2,10 @@
 
 use App\Models\Konsultasi;
 
+beforeEach(function () {
+    $this->actingAsRole();
+});
+
 test('konsultasi can be created with valid data', function () {
     $data = [
         'nama_pemohon' => 'Ir. Hendra Gunawan',

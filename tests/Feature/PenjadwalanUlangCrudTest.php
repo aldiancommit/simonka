@@ -3,6 +3,10 @@
 use App\Models\Konsultasi;
 use App\Models\PenjadwalanUlang;
 
+beforeEach(function () {
+    $this->actingAsRole();
+});
+
 test('penjadwalan ulang can be created with valid data', function () {
     $konsultasi = Konsultasi::factory()->create([
         'tanggal_konsultasi' => now()->addDays(5)->format('Y-m-d'),

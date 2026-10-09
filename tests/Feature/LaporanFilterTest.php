@@ -1,5 +1,9 @@
 <?php
 
+beforeEach(function () {
+    $this->actingAsRole();
+});
+
 test('invalid report date ranges are rejected before querying records', function (string $start, string $end, string $errorField) {
     $response = $this->get('/laporan?'.http_build_query([
         'filter' => '1',

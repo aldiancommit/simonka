@@ -4,6 +4,10 @@ use App\Models\JadwalKegiatan;
 use App\Models\Konsultasi;
 use App\Models\PenjadwalanUlang;
 
+beforeEach(function () {
+    $this->actingAsRole();
+});
+
 test('dashboard and all static navigation routes return successful responses', function (string $route) {
     $response = $this->get($route);
 
