@@ -34,14 +34,13 @@ class UpdateKonsultasiRequest extends FormRequest
 
         // Sekretariat:
         if ($user->hasRole(Role::Sekretariat)) {
-            // Pada permohonan Menunggu: dilarang mengirim status Disetujui atau Ditolak
-            if ($konsultasi->status === 'Menunggu' && in_array($this->input('status'), ['Disetujui', 'Ditolak'])) {
-                return false;
-            }
+            if ($this->has('status')) {
+                $submittedStatus = $this->input('status');
+                $allowedStatuses = [$konsultasi->status, 'Selesai', 'Dibatalkan'];
 
-            // Pada permohonan Disetujui: dilarang mengirim status Ditolak
-            if ($konsultasi->status === 'Disetujui' && $this->input('status') === 'Ditolak') {
-                return false;
+                if (! in_array($submittedStatus, $allowedStatuses, true)) {
+                    return false;
+                }
             }
 
             // Pada konsultasi berstatus Disetujui: dilarang mengubah tanggal_konsultasi, waktu_mulai, waktu_selesai

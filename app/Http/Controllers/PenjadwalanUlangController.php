@@ -103,7 +103,7 @@ class PenjadwalanUlangController extends Controller
                     $data['snapshot_waktu_selesai_lama'] = $konsultasi->waktu_selesai;
                 }
 
-                $newWaktuSelesai = $data['waktu_selesai_baru'] ?? $konsultasi->waktu_selesai;
+                $newWaktuSelesai = $data['waktu_selesai_baru'] ?? $penjadwalanUlang->waktu_selesai_baru ?? $konsultasi->waktu_selesai;
 
                 $konsultasi->update([
                     'tanggal_konsultasi' => $data['tanggal_baru'] ?? $penjadwalanUlang->tanggal_baru,
