@@ -5,9 +5,11 @@
 @section('banner_subtitle', 'Manajemen daftar pengajuan perubahan waktu dan tanggal konsultasi.')
 
 @section('banner_action')
-    <a href="{{ route('penjadwalan-ulang.create') }}" class="btn btn-fundflow-primary" wire:navigate>
-        <i class="fas fa-plus"></i> Ajukan Reschedule
-    </a>
+    @can('create', App\Models\PenjadwalanUlang::class)
+        <a href="{{ route('penjadwalan-ulang.create') }}" class="btn btn-fundflow-primary" wire:navigate>
+            <i class="fas fa-plus"></i> Ajukan Reschedule
+        </a>
+    @endcan
 @endsection
 
 @section('content')
@@ -34,9 +36,11 @@
                     </a>
                 @endif
             </form>
-            <a href="{{ route('penjadwalan-ulang.create') }}" class="btn btn-fundflow-primary py-2 px-3.5 d-inline-flex align-items-center gap-1.5" wire:navigate>
-                <span class="fw-bold">Tambah Reschedule</span>
-            </a>
+            @can('create', App\Models\PenjadwalanUlang::class)
+                <a href="{{ route('penjadwalan-ulang.create') }}" class="btn btn-fundflow-primary py-2 px-3.5 d-inline-flex align-items-center gap-1.5" wire:navigate>
+                    <span class="fw-bold">Tambah Reschedule</span>
+                </a>
+            @endcan
         </div>
     </div>
 
@@ -91,64 +95,64 @@
                         <span class="badge {{ $badge }}">{{ $pu->status }}</span>
                     </td>
                     <td class="text-end">
-    <div class="dropdown dropstart d-inline-block">
-        <!-- Tombol Titik 3 -->
-        <!-- strategy: fixed memaksa dropdown melayang keluar dari batasan tabel/overflow -->
-        <button class="btn btn-fundflow-glass py-1.5 px-3 rounded-pill d-inline-flex align-items-center gap-2" 
-                type="button" 
-                data-bs-toggle="dropdown" 
-                data-bs-popper-config='{"strategy": "fixed"}'
-                aria-expanded="false" 
-                title="Opsi">
-            <i class="fas fa-ellipsis-v text-muted fs-6"></i>
-            <span class="fw-bold fs-6">⋯</span>
-            <i class="fas fa-caret-down text-muted fs-6"></i>
-        </button>
+                        <div class="dropdown dropstart d-inline-block">
+                            <button class="btn btn-fundflow-glass py-1.5 px-3 rounded-pill d-inline-flex align-items-center gap-2" 
+                                    type="button" 
+                                    data-bs-toggle="dropdown" 
+                                    data-bs-popper-config='{"strategy": "fixed"}'
+                                    aria-expanded="false" 
+                                    title="Opsi">
+                                <i class="fas fa-ellipsis-v text-muted fs-6"></i>
+                                <span class="fw-bold fs-6">⋯</span>
+                                <i class="fas fa-caret-down text-muted fs-6"></i>
+                            </button>
 
-        <!-- Popup Card Menu (Melayang Bebas Out of Table) -->
-        <ul class="dropdown-menu glass-card shadow-lg border-0 p-2" 
-            style="min-width: 150px; z-index: 9999;">
-            
-            <!-- Detail -->
-            <li>
-                <a href="{{ route('penjadwalan-ulang.show', $pu) }}" 
-                   class="dropdown-item rounded-2 small py-1.5 px-2 d-flex align-items-center gap-2" 
-                   wire:navigate>
-                    <i class="fas fa-eye text-primary fa-fw"></i>
-                    <span>Detail</span>
-                </a>
-            </li>
+                            <ul class="dropdown-menu glass-card shadow-lg border-0 p-2" 
+                                style="min-width: 150px; z-index: 9999;">
+                                
+                                <!-- Detail -->
+                                <li>
+                                    <a href="{{ route('penjadwalan-ulang.show', $pu) }}" 
+                                    class="dropdown-item rounded-2 small py-1.5 px-2 d-flex align-items-center gap-2" 
+                                    wire:navigate>
+                                        <i class="fas fa-eye text-primary fa-fw"></i>
+                                        <span>Detail</span>
+                                    </a>
+                                </li>
 
-            <!-- Review / Edit -->
-            <li>
-                <a href="{{ route('penjadwalan-ulang.edit', $pu) }}" 
-                   class="dropdown-item rounded-2 small py-1.5 px-2 d-flex align-items-center gap-2" 
-                   wire:navigate>
-                    <i class="fas fa-check-circle text-info fa-fw"></i>
-                    <span>Review</span>
-                </a>
-            </li>
+                                <!-- Review / Edit -->
+                                @can('update', $pu)
+                                <li>
+                                    <a href="{{ route('penjadwalan-ulang.edit', $pu) }}" 
+                                    class="dropdown-item rounded-2 small py-1.5 px-2 d-flex align-items-center gap-2" 
+                                    wire:navigate>
+                                        <i class="fas fa-check-circle text-info fa-fw"></i>
+                                        <span>Review</span>
+                                    </a>
+                                </li>
+                                @endcan
 
-            <li><hr class="dropdown-divider my-1 opacity-25"></li>
-
-            <!-- Hapus -->
-            <li>
-                <form action="{{ route('penjadwalan-ulang.destroy', $pu) }}" 
-                      method="POST" 
-                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus data penjadwalan ulang ini?');" 
-                      class="m-0">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" 
-                            class="dropdown-item rounded-2 small py-1.5 px-2 text-danger d-flex align-items-center gap-2">
-                        <i class="fas fa-trash-alt fa-fw"></i>
-                        <span>Hapus</span>
-                    </button>
-                </form>
-            </li>
-        </ul>
-    </div>
-</td>
+                                @can('delete', $pu)
+                                <li><hr class="dropdown-divider my-1 opacity-25"></li>
+                                <!-- Hapus -->
+                                <li>
+                                    <form action="{{ route('penjadwalan-ulang.destroy', $pu) }}" 
+                                        method="POST" 
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus data penjadwalan ulang ini?');" 
+                                        class="m-0">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="dropdown-item rounded-2 small py-1.5 px-2 text-danger d-flex align-items-center gap-2">
+                                            <i class="fas fa-trash-alt fa-fw"></i>
+                                            <span>Hapus</span>
+                                        </button>
+                                    </form>
+                                </li>
+                                @endcan
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
                 @empty
                 <tr>
@@ -167,7 +171,9 @@
                         @if(request('search'))
                             <a href="{{ route('penjadwalan-ulang.index') }}" class="btn btn-fundflow-glass btn-sm" wire:navigate>Reset Pencarian</a>
                         @else
-                            <a href="{{ route('penjadwalan-ulang.create') }}" class="btn btn-fundflow-primary btn-sm" wire:navigate>+ Ajukan Reschedule Baru</a>
+                            @can('create', App\Models\PenjadwalanUlang::class)
+                                <a href="{{ route('penjadwalan-ulang.create') }}" class="btn btn-fundflow-primary btn-sm" wire:navigate>+ Ajukan Reschedule Baru</a>
+                            @endcan
                         @endif
                     </td>
                 </tr>

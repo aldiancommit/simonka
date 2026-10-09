@@ -5,9 +5,11 @@
 @section('banner_subtitle', 'Manajemen daftar permohonan konsultasi dan koordinasi.')
 
 @section('banner_action')
-    <a href="{{ route('konsultasi.create') }}" class="btn btn-fundflow-primary" wire:navigate>
-        <i class="fas fa-plus"></i> Tambah Konsultasi
-    </a>
+    @can('create', App\Models\Konsultasi::class)
+        <a href="{{ route('konsultasi.create') }}" class="btn btn-fundflow-primary" wire:navigate>
+            <i class="fas fa-plus"></i> Tambah Konsultasi
+        </a>
+    @endcan
 @endsection
 
 @section('content')
@@ -34,9 +36,11 @@
                     </a>
                 @endif
             </form>
-            <a href="{{ route('konsultasi.create') }}" class="btn btn-fundflow-primary py-2 px-3.5 d-inline-flex align-items-center gap-1.5" wire:navigate>
-                <span class="fw-bold">Tambah Baru</span>
-            </a>
+            @can('create', App\Models\Konsultasi::class)
+                <a href="{{ route('konsultasi.create') }}" class="btn btn-fundflow-primary py-2 px-3.5 d-inline-flex align-items-center gap-1.5" wire:navigate>
+                    <span class="fw-bold">Tambah Baru</span>
+                </a>
+            @endcan
         </div>
     </div>
 
@@ -100,7 +104,6 @@
                     </td>
                     <td class="text-end">
                         <div class="dropdown dropstart d-inline-block">
-                            <!-- Tombol Aksi Pembuka (Lebih Besar & Jelas) -->
                             <button class="btn btn-fundflow-glass py-1.5 px-3 rounded-pill d-inline-flex align-items-center gap-2" 
                                     type="button" 
                                     data-bs-toggle="dropdown" 
@@ -112,7 +115,6 @@
                                 <i class="fas fa-caret-down text-muted fs-6"></i>
                             </button>
 
-                            <!-- Popup Card Menu (Melayang Keluar Tabel) -->
                             <ul class="dropdown-menu glass-card shadow-lg border-0 p-2" 
                                 style="min-width: 150px; z-index: 9999;">
                                 
@@ -127,6 +129,7 @@
                                 </li>
 
                                 <!-- Edit -->
+                                @can('update', $konsultasi)
                                 <li>
                                     <a href="{{ route('konsultasi.edit', $konsultasi) }}" 
                                     class="dropdown-item rounded-2 small py-1.5 px-2 d-flex align-items-center gap-2" 
@@ -135,9 +138,10 @@
                                         <span>Edit</span>
                                     </a>
                                 </li>
+                                @endcan
 
+                                @can('delete', $konsultasi)
                                 <li><hr class="dropdown-divider my-1 opacity-25"></li>
-
                                 <!-- Hapus -->
                                 <li>
                                     <form action="{{ route('konsultasi.destroy', $konsultasi) }}" 
@@ -153,6 +157,7 @@
                                         </button>
                                     </form>
                                 </li>
+                                @endcan
                             </ul>
                         </div>
                     </td>
@@ -174,7 +179,9 @@
                         @if(request('search'))
                             <a href="{{ route('konsultasi.index') }}" class="btn btn-fundflow-glass btn-sm" wire:navigate>Reset Pencarian</a>
                         @else
-                            <a href="{{ route('konsultasi.create') }}" class="btn btn-fundflow-primary btn-sm" wire:navigate>+ Tambah Konsultasi Pertama</a>
+                            @can('create', App\Models\Konsultasi::class)
+                                <a href="{{ route('konsultasi.create') }}" class="btn btn-fundflow-primary btn-sm" wire:navigate>+ Tambah Konsultasi Pertama</a>
+                            @endcan
                         @endif
                     </td>
                 </tr>

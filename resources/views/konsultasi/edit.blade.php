@@ -19,8 +19,20 @@
 <div class="glass-card p-4 p-md-5 simonka-fade-in">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom border-white gap-2">
         <div>
-            <h4 class="fw-bolder mb-1 text-dark tracking-tight">Edit Data Konsultasi</h4>
-            <p class="text-muted small mb-0">Perbarui data permohonan konsultasi di bawah ini.</p>
+            <h4 class="fw-bolder mb-1 text-dark tracking-tight">
+                @if(auth()->user()?->hasRole(\App\Enums\Role::Pimpinan))
+                    Telaah & Putusan Konsultasi
+                @else
+                    Edit Data Konsultasi
+                @endif
+            </h4>
+            <p class="text-muted small mb-0">
+                @if(auth()->user()?->hasRole(\App\Enums\Role::Pimpinan))
+                    Mode Telaah Pimpinan: Perbarui status putusan dan catatan disposisi.
+                @else
+                    Perbarui data permohonan konsultasi di bawah ini.
+                @endif
+            </p>
         </div>
         @php
             $badgeClass = match($konsultasi->status) {
@@ -35,76 +47,150 @@
         <span class="badge {{ $badgeClass }} px-3 py-1.5">Status: {{ $konsultasi->status }}</span>
     </div>
 
-    <form method="POST" action="{{ route('konsultasi.update', $konsultasi) }}">
-        @csrf
-        @method('PUT')
-        
-        <div class="row mb-4">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Nama Pemohon <span class="text-danger">*</span></label>
-                <input type="text" name="nama_pemohon" class="form-control @error('nama_pemohon') is-invalid @enderror" value="{{ old('nama_pemohon', $konsultasi->nama_pemohon) }}" required>
-                @error('nama_pemohon')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Instansi / Unit Kerja</label>
-                <input type="text" name="instansi" class="form-control @error('instansi') is-invalid @enderror" value="{{ old('instansi', $konsultasi->instansi) }}">
-                @error('instansi')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">No. Telepon / WhatsApp</label>
-                <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" value="{{ old('no_telepon', $konsultasi->no_telepon) }}">
-                @error('no_telepon')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Alamat Email</label>
-                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $konsultasi->email) }}">
-                @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-8 mb-3">
-                <label class="form-label">Perihal / Topik Pembahasan <span class="text-danger">*</span></label>
-                <input type="text" name="perihal" class="form-control @error('perihal') is-invalid @enderror" value="{{ old('perihal', $konsultasi->perihal) }}" required>
-                @error('perihal')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-4 mb-3">
-                <label class="form-label">Status Konsultasi <span class="text-danger">*</span></label>
-                <select name="status" class="form-select @error('status') is-invalid @enderror" required>
-                    @foreach(['Menunggu', 'Disetujui', 'Selesai', 'Ditolak', 'Dibatalkan'] as $status)
-                        <option value="{{ $status }}" {{ old('status', $konsultasi->status) === $status ? 'selected' : '' }}>{{ $status }}</option>
-                    @endforeach
-                </select>
-                @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-4 mb-3">
-                <label class="form-label">Tanggal Konsultasi <span class="text-danger">*</span></label>
-                <input type="date" name="tanggal_konsultasi" class="form-control @error('tanggal_konsultasi') is-invalid @enderror" value="{{ old('tanggal_konsultasi', $konsultasi->tanggal_konsultasi->format('Y-m-d')) }}" required>
-                @error('tanggal_konsultasi')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-4 mb-3">
-                <label class="form-label">Waktu Mulai <span class="text-danger">*</span></label>
-                <input type="time" name="waktu_mulai" class="form-control @error('waktu_mulai') is-invalid @enderror" value="{{ old('waktu_mulai', date('H:i', strtotime($konsultasi->waktu_mulai))) }}" required>
-                @error('waktu_mulai')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-4 mb-3">
-                <label class="form-label">Waktu Selesai</label>
-                <input type="time" name="waktu_selesai" class="form-control @error('waktu_selesai') is-invalid @enderror" value="{{ old('waktu_selesai', $konsultasi->waktu_selesai ? date('H:i', strtotime($konsultasi->waktu_selesai)) : '') }}">
-                @error('waktu_selesai')<div class="invalid-feedback">{{ $message }}</div>@enderror
-            </div>
-            <div class="col-md-12 mb-3">
-                <label class="form-label">Catatan Tambahan</label>
-                <textarea name="catatan" class="form-control @error('catatan') is-invalid @enderror" rows="3">{{ old('catatan', $konsultasi->catatan) }}</textarea>
-                @error('catatan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    @if(auth()->user()?->hasRole(\App\Enums\Role::Pimpinan))
+        {{-- Tampilan Khusus Pimpinan (Mode Telaah: Data sebagai Teks Statis, Form hanya Status & Catatan) --}}
+        <div class="glass-card-subtle p-4 rounded-4 mb-4 border border-light">
+            <h6 class="fw-bold text-dark mb-3"><i class="fas fa-info-circle text-primary me-2"></i>Informasi Permohonan Konsultasi</h6>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Nama Pemohon:</span>
+                    <strong class="text-dark">{{ $konsultasi->nama_pemohon }}</strong>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Instansi:</span>
+                    <strong class="text-dark">{{ $konsultasi->instansi ?: 'Perorangan' }}</strong>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Kontak / No. Telepon:</span>
+                    <strong class="text-dark">{{ $konsultasi->no_telepon ?: '-' }} ({{ $konsultasi->email ?: 'Email tidak ada' }})</strong>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">Rencana Jadwal:</span>
+                    <strong class="text-dark">{{ $konsultasi->tanggal_konsultasi->format('d/m/Y') }} ({{ date('H:i', strtotime($konsultasi->waktu_mulai)) }} WIB)</strong>
+                </div>
+                <div class="col-12">
+                    <span class="text-muted small d-block">Perihal:</span>
+                    <p class="text-dark fw-medium mb-0">{{ $konsultasi->perihal }}</p>
+                </div>
             </div>
         </div>
 
-        <div class="d-flex justify-content-end gap-2 pt-3 border-top border-white">
-            <a href="{{ route('konsultasi.index') }}" class="btn btn-fundflow-glass" wire:navigate>Batal</a>
-            <button type="submit" class="btn btn-fundflow-primary px-4">
-                <i class="fas fa-save me-1"></i> Simpan Perubahan
-            </button>
-        </div>
-    </form>
+        <form method="POST" action="{{ route('konsultasi.update', $konsultasi) }}">
+            @csrf
+            @method('PUT')
+
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Status Putusan Pimpinan <span class="text-danger">*</span></label>
+                    <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                        @foreach(['Menunggu', 'Disetujui', 'Ditolak', 'Selesai', 'Dibatalkan'] as $status)
+                            <option value="{{ $status }}" {{ old('status', $konsultasi->status) === $status ? 'selected' : '' }}>{{ $status }}</option>
+                        @endforeach
+                    </select>
+                    @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label fw-bold">Catatan Disposisi / Arahan Pimpinan</label>
+                    <textarea name="catatan" class="form-control @error('catatan') is-invalid @enderror" rows="4" placeholder="Masukkan catatan atau arahan disposisi...">{{ old('catatan', $konsultasi->catatan) }}</textarea>
+                    @error('catatan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 pt-3 border-top border-white">
+                <a href="{{ route('konsultasi.index') }}" class="btn btn-fundflow-glass" wire:navigate>Batal</a>
+                <button type="submit" class="btn btn-fundflow-primary px-4">
+                    <i class="fas fa-check me-1"></i> Simpan Putusan
+                </button>
+            </div>
+        </form>
+    @else
+        {{-- Form Edit Lengkap untuk Admin dan Sekretariat --}}
+        <form method="POST" action="{{ route('konsultasi.update', $konsultasi) }}">
+            @csrf
+            @method('PUT')
+            
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nama Pemohon <span class="text-danger">*</span></label>
+                    <input type="text" name="nama_pemohon" class="form-control @error('nama_pemohon') is-invalid @enderror" value="{{ old('nama_pemohon', $konsultasi->nama_pemohon) }}" required>
+                    @error('nama_pemohon')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Instansi / Unit Kerja</label>
+                    <input type="text" name="instansi" class="form-control @error('instansi') is-invalid @enderror" value="{{ old('instansi', $konsultasi->instansi) }}">
+                    @error('instansi')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">No. Telepon / WhatsApp</label>
+                    <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" value="{{ old('no_telepon', $konsultasi->no_telepon) }}">
+                    @error('no_telepon')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Alamat Email</label>
+                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $konsultasi->email) }}">
+                    @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-8 mb-3">
+                    <label class="form-label">Perihal / Topik Pembahasan <span class="text-danger">*</span></label>
+                    <input type="text" name="perihal" class="form-control @error('perihal') is-invalid @enderror" value="{{ old('perihal', $konsultasi->perihal) }}" required>
+                    @error('perihal')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Status Konsultasi <span class="text-danger">*</span></label>
+                    <select name="status" class="form-select @error('status') is-invalid @enderror" required>
+                        @if(auth()->user()?->hasRole(\App\Enums\Role::Sekretariat))
+                            {{-- Sekretariat: Opsi status saat ini (selected), plus Selesai dan Dibatalkan --}}
+                            <option value="{{ $konsultasi->status }}" selected>{{ $konsultasi->status }} (Saat Ini)</option>
+                            @if($konsultasi->status !== 'Selesai')
+                                <option value="Selesai" {{ old('status') === 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                            @endif
+                            @if($konsultasi->status !== 'Dibatalkan')
+                                <option value="Dibatalkan" {{ old('status') === 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                            @endif
+                        @else
+                            {{-- Admin: Seluruh opsi status --}}
+                            @foreach(['Menunggu', 'Disetujui', 'Selesai', 'Ditolak', 'Dibatalkan'] as $status)
+                                <option value="{{ $status }}" {{ old('status', $konsultasi->status) === $status ? 'selected' : '' }}>{{ $status }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                    @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tanggal Konsultasi <span class="text-danger">*</span></label>
+                    <input type="date" name="tanggal_konsultasi" class="form-control @error('tanggal_konsultasi') is-invalid @enderror" value="{{ old('tanggal_konsultasi', $konsultasi->tanggal_konsultasi->format('Y-m-d')) }}" required>
+                    @if($konsultasi->status === 'Disetujui' && auth()->user()?->hasRole(\App\Enums\Role::Sekretariat))
+                        <small class="text-muted d-block mt-1"><i class="fas fa-info-circle me-1"></i>Perubahan jadwal konsultasi yang disetujui harus melalui Penjadwalan Ulang.</small>
+                    @endif
+                    @error('tanggal_konsultasi')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Waktu Mulai <span class="text-danger">*</span></label>
+                    <input type="time" name="waktu_mulai" class="form-control @error('waktu_mulai') is-invalid @enderror" value="{{ old('waktu_mulai', date('H:i', strtotime($konsultasi->waktu_mulai))) }}" required>
+                    @error('waktu_mulai')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Waktu Selesai</label>
+                    <input type="time" name="waktu_selesai" class="form-control @error('waktu_selesai') is-invalid @enderror" value="{{ old('waktu_selesai', $konsultasi->waktu_selesai ? date('H:i', strtotime($konsultasi->waktu_selesai)) : '') }}">
+                    @error('waktu_selesai')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Catatan Tambahan</label>
+                    <textarea name="catatan" class="form-control @error('catatan') is-invalid @enderror" rows="3">{{ old('catatan', $konsultasi->catatan) }}</textarea>
+                    @error('catatan')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 pt-3 border-top border-white">
+                <a href="{{ route('konsultasi.index') }}" class="btn btn-fundflow-glass" wire:navigate>Batal</a>
+                <button type="submit" class="btn btn-fundflow-primary px-4">
+                    <i class="fas fa-save me-1"></i> Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    @endif
 </div>
 @endsection

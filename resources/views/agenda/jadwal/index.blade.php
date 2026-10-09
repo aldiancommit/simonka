@@ -5,9 +5,11 @@
 @section('banner_subtitle', 'Manajemen daftar jadwal agenda dan kegiatan resmi pimpinan.')
 
 @section('banner_action')
-    <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary" wire:navigate>
-        <i class="fas fa-plus"></i> Tambah Jadwal
-    </a>
+    @can('create', App\Models\JadwalKegiatan::class)
+        <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary" wire:navigate>
+            <i class="fas fa-plus"></i> Tambah Jadwal
+        </a>
+    @endcan
 @endsection
 
 @section('content')
@@ -34,9 +36,11 @@
                     </a>
                 @endif
             </form>
-            <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary py-2 px-3.5 d-inline-flex align-items-center gap-1.5" wire:navigate>
-                <span class="fw-bold">Tambah Jadwal</span>
-            </a>
+            @can('create', App\Models\JadwalKegiatan::class)
+                <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary py-2 px-3.5 d-inline-flex align-items-center gap-1.5" wire:navigate>
+                    <span class="fw-bold">Tambah Jadwal</span>
+                </a>
+            @endcan
         </div>
     </div>
 
@@ -95,7 +99,6 @@
                     </td>
                     <td class="text-end">
                         <div class="dropdown dropstart d-inline-block">
-                            <!-- Tombol Aksi Pembuka -->
                             <button class="btn btn-fundflow-glass py-1.5 px-3 rounded-pill d-inline-flex align-items-center gap-2" 
                                     type="button" 
                                     data-bs-toggle="dropdown" 
@@ -107,7 +110,6 @@
                                 <i class="fas fa-caret-down text-muted fs-6"></i>
                             </button>
 
-                            <!-- Popup Card Menu (Melayang Keluar Tabel) -->
                             <ul class="dropdown-menu glass-card shadow-lg border-0 p-2" 
                                 style="min-width: 150px; z-index: 9999;">
                                 
@@ -122,6 +124,7 @@
                                 </li>
 
                                 <!-- Edit -->
+                                @can('update', $jadwal)
                                 <li>
                                     <a href="{{ route('agenda.jadwal.edit', ['jadwal' => $jadwal]) }}" 
                                     class="dropdown-item rounded-2 small py-1.5 px-2 d-flex align-items-center gap-2" 
@@ -130,9 +133,10 @@
                                         <span>Edit</span>
                                     </a>
                                 </li>
+                                @endcan
 
+                                @can('delete', $jadwal)
                                 <li><hr class="dropdown-divider my-1 opacity-25"></li>
-
                                 <!-- Hapus -->
                                 <li>
                                     <form action="{{ route('agenda.jadwal.destroy', ['jadwal' => $jadwal]) }}" 
@@ -148,6 +152,7 @@
                                         </button>
                                     </form>
                                 </li>
+                                @endcan
                             </ul>
                         </div>
                     </td>
@@ -166,7 +171,9 @@
                         @if(request('search'))
                             <a href="{{ route('agenda.jadwal.index') }}" class="btn btn-fundflow-glass btn-sm" wire:navigate>Reset Pencarian</a>
                         @else
-                            <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary py-1 px-2 d-inline-flex align-items-center gap-1.5" wire:navigate>Tambah Jadwal Pertama</a>
+                            @can('create', App\Models\JadwalKegiatan::class)
+                                <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary py-1 px-2 d-inline-flex align-items-center gap-1.5" wire:navigate>Tambah Jadwal Pertama</a>
+                            @endcan
                         @endif
                     </td>
                 </tr>
