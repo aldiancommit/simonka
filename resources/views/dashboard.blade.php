@@ -4,21 +4,6 @@
 @section('banner_title', 'Dashboard SIMONKA')
 @section('banner_subtitle', 'Sistem Informasi Monitoring Konsultasi dan Agenda Kepala Badan.')
 
-@section('banner_action')
-    <div class="d-flex align-items-center gap-2">
-        @can('create', App\Models\Konsultasi::class)
-        <a href="{{ route('konsultasi.create') }}" class="btn btn-fundflow-primary" wire:navigate>
-            <i class="fas fa-plus"></i> Tambah Konsultasi
-        </a>
-        @endcan
-        @can('create', App\Models\JadwalKegiatan::class)
-        <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-glass" wire:navigate>
-            <i class="fas fa-calendar-plus"></i> Jadwal Baru
-        </a>
-        @endcan
-    </div>
-@endsection
-
 @section('content')
 <div class="simonka-fade-in d-flex flex-column gap-4">
 

@@ -4,16 +4,6 @@
 @section('banner_title', 'Detail Jadwal Kegiatan')
 @section('banner_subtitle', 'Informasi lengkap agenda pimpinan #' . $jadwalKegiatan->id)
 
-@section('banner_action')
-    <div class="d-flex gap-2">
-        <a href="{{ route('agenda.jadwal.edit', ['jadwal' => $jadwalKegiatan]) }}" class="btn btn-fundflow-primary" wire:navigate>
-            <i class="fas fa-edit me-1"></i> Edit Jadwal
-        </a>
-        <a href="{{ route('agenda.jadwal.index') }}" class="btn btn-fundflow-glass" wire:navigate>
-            <i class="fas fa-arrow-left me-1"></i> Kembali
-        </a>
-    </div>
-@endsection
 
 @section('content')
 <div class="glass-card p-4 p-md-5 mb-4 simonka-fade-in">
@@ -56,6 +46,14 @@
                 {{ $jadwalKegiatan->keterangan ?: 'Tidak ada keterangan tambahan.' }}
             </div>
         </div>
+    </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+        <a href="{{ route('agenda.jadwal.edit', ['jadwal' => $jadwalKegiatan]) }}" class="btn btn-fundflow-primary" wire:navigate>
+           Edit Jadwal
+        </a>
+        <a href="{{ route('agenda.jadwal.index') }}" class="btn btn-fundflow-glass" wire:navigate>
+            Kembali
+        </a>
     </div>
 </div>
 @endsection

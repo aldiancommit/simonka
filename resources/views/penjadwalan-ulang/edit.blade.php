@@ -4,17 +4,6 @@
 @section('banner_title', 'Review Reschedule')
 @section('banner_subtitle', 'Persetujuan atau pembaruan pengajuan perubahan jadwal konsultasi.')
 
-@section('banner_action')
-    <div class="d-flex gap-2">
-        <a href="{{ route('penjadwalan-ulang.show', $penjadwalanUlang) }}" class="btn btn-fundflow-glass" wire:navigate>
-            <i class="fas fa-eye me-1"></i> Detail
-        </a>
-        <a href="{{ route('penjadwalan-ulang.index') }}" class="btn btn-fundflow-glass" wire:navigate>
-            <i class="fas fa-arrow-left me-1"></i> Kembali
-        </a>
-    </div>
-@endsection
-
 @section('content')
 <div class="glass-card p-4 p-md-5 simonka-fade-in">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom border-white gap-2">
@@ -189,7 +178,7 @@
             <div class="d-flex justify-content-end gap-2 pt-3 border-top border-white">
                 <a href="{{ route('penjadwalan-ulang.index') }}" class="btn btn-fundflow-glass" wire:navigate>Batal</a>
                 <button type="submit" class="btn btn-fundflow-primary px-4">
-                    <i class="fas fa-save me-1"></i> Simpan Perubahan
+                    Simpan Perubahan
                 </button>
             </div>
         </form>

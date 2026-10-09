@@ -4,12 +4,6 @@
 @section('banner_title', 'Penjadwalan Ulang')
 @section('banner_subtitle', 'Formulir pengajuan perubahan jadwal dan waktu konsultasi.')
 
-@section('banner_action')
-    <a href="{{ route('penjadwalan-ulang.index') }}" class="btn btn-fundflow-glass" wire:navigate>
-        <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
-    </a>
-@endsection
-
 @section('content')
 <div class="glass-card p-4 p-md-5 simonka-fade-in">
     <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-white">

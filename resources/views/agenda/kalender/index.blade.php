@@ -12,6 +12,7 @@
     @endcan
 @endsection
 
+
 @section('content')
 <div class="row simonka-fade-in">
     <div class="col-12">

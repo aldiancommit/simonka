@@ -4,12 +4,6 @@
 @section('banner_title', 'Tambah Konsultasi')
 @section('banner_subtitle', 'Formulir pendaftaran permohonan konsultasi dan koordinasi baru.')
 
-@section('banner_action')
-    <a href="{{ route('konsultasi.index') }}" class="btn btn-fundflow-glass" wire:navigate>
-        <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
-    </a>
-@endsection
-
 @section('content')
 <div class="glass-card p-4 p-md-5 simonka-fade-in">
     <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-white">
@@ -17,6 +11,10 @@
             <h4 class="fw-bolder mb-1 text-dark tracking-tight">Form Permohonan Konsultasi</h4>
             <p class="text-muted small mb-0">Lengkapi data di bawah ini secara jelas dan akurat.</p>
         </div>
+
+    <a href="{{ route('konsultasi.index') }}" class="btn btn-fundflow-glass" wire:navigate>
+        </i> Kembali ke Daftar
+    </a>
     </div>
 
     <form method="POST" action="{{ route('konsultasi.store') }}">

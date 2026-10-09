@@ -10,11 +10,21 @@
             <div class="col-md-6 col-lg-5 col-xl-4">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4 p-sm-5">
-                        <div class="text-center mb-4">
-                            <h3 class="fw-bold text-primary mb-1">SIMONKA</h3>
-                            <p class="text-muted small">Sistem Informasi Monitoring dan Konsultasi</p>
-                        </div>
+                        <div class="text-center mb-3">
+                            <img src="{{ asset('assets/images/logo-palu.png') }}"
+                                alt="Logo Kota Palu"
+                                class="mb-3"
+                                style="width: 64px; height: 64px; object-fit: contain;">
 
+                            <h4 class="fw-bold text-fundflow-primary mb-2">
+                                SIMONKA <span class="text-muted fw-normal">|</span> Kesbangpol
+                            </h4>
+
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">
+                                Sistem Informasi Monitoring dan<br>
+                                Konsultasi Kepala Badan 
+                            </p>
+                        </div>
                         @if ($errors->any())
                             <div class="alert alert-danger py-2 px-3 small rounded-3 mb-4">
                                 <ul class="mb-0 ps-3">
@@ -50,7 +60,7 @@
                             </div>
 
                             <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-primary py-2 fw-semibold rounded-3">
+                                <button type="submit" class="btn btn-fundflow-primary py-2 fw-semibold rounded-3">
                                     Masuk ke SIMONKA
                                 </button>
                             </div>

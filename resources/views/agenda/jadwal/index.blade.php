@@ -4,14 +4,6 @@
 @section('banner_title', 'Jadwal Kegiatan Resmi')
 @section('banner_subtitle', 'Manajemen daftar jadwal agenda dan kegiatan resmi pimpinan.')
 
-@section('banner_action')
-    @can('create', App\Models\JadwalKegiatan::class)
-        <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary" wire:navigate>
-            <i class="fas fa-plus"></i> Tambah Jadwal
-        </a>
-    @endcan
-@endsection
-
 @section('content')
 <div class="glass-card p-4 p-md-5 simonka-fade-in">
     <!-- Header with Search & Quick Filter -->
@@ -30,11 +22,6 @@
                 <button type="submit" class="btn btn-fundflow-glass py-2 px-3">
                     <span class="fw-bold">Cari</span>
                 </button>
-                @if(request('search'))
-                    <a href="{{ route('agenda.jadwal.index') }}" class="btn btn-fundflow-glass py-2 px-3" title="Reset filter" wire:navigate>
-                        <i class="fas fa-times"></i>
-                    </a>
-                @endif
             </form>
             @can('create', App\Models\JadwalKegiatan::class)
                 <a href="{{ route('agenda.jadwal.create') }}" class="btn btn-fundflow-primary py-2 px-3.5 d-inline-flex align-items-center gap-1.5" wire:navigate>

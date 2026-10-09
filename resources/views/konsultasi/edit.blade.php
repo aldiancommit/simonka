@@ -4,17 +4,6 @@
 @section('banner_title', 'Edit Konsultasi')
 @section('banner_subtitle', 'Pembaruan data permohonan konsultasi #' . $konsultasi->id)
 
-@section('banner_action')
-    <div class="d-flex gap-2">
-        <a href="{{ route('konsultasi.show', $konsultasi) }}" class="btn btn-fundflow-glass" wire:navigate>
-            <i class="fas fa-eye me-1"></i> Detail
-        </a>
-        <a href="{{ route('konsultasi.index') }}" class="btn btn-fundflow-glass" wire:navigate>
-            <i class="fas fa-arrow-left me-1"></i> Kembali
-        </a>
-    </div>
-@endsection
-
 @section('content')
 <div class="glass-card p-4 p-md-5 simonka-fade-in">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-2 border-bottom border-white gap-2">

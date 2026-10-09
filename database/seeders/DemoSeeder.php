@@ -38,17 +38,17 @@ class DemoSeeder extends Seeder
         // 1. Seed 3 demo users (Admin, Pimpinan, Sekretariat)
         $usersData = [
             [
-                'name' => 'Administrator SIMONKA Demo',
+                'name' => 'Administrator SIMONKA',
                 'email' => 'admin@simonka.test',
                 'role' => Role::Admin,
             ],
             [
-                'name' => 'Pimpinan SIMONKA Demo',
+                'name' => 'Pimpinan SIMONKA',
                 'email' => 'pimpinan@simonka.test',
                 'role' => Role::Pimpinan,
             ],
             [
-                'name' => 'Sekretariat SIMONKA Demo',
+                'name' => 'Sekretariat SIMONKA',
                 'email' => 'sekretariat@simonka.test',
                 'role' => Role::Sekretariat,
             ],

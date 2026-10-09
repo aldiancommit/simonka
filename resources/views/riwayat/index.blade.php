@@ -11,10 +11,10 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 pb-3 border-bottom border-white">
                 <div class="d-flex align-items-center gap-2">
                     <a class="btn {{ $tab == 'konsultasi' ? 'btn-fundflow-primary' : 'btn-fundflow-glass' }} btn-sm py-2 px-3" href="{{ route('riwayat.index', ['tab' => 'konsultasi']) }}" wire:navigate>
-                        <i class="fas fa-comments me-1"></i> Arsip Konsultasi
+                        Arsip Konsultasi
                     </a>
                     <a class="btn {{ $tab == 'jadwal' ? 'btn-fundflow-primary' : 'btn-fundflow-glass' }} btn-sm py-2 px-3" href="{{ route('riwayat.index', ['tab' => 'jadwal']) }}" wire:navigate>
-                        <i class="fas fa-calendar-check me-1"></i> Arsip Jadwal Kegiatan
+                       Arsip Jadwal Kegiatan
                     </a>
                 </div>
 
@@ -29,7 +29,7 @@
                     </button>
                     @if(request('search'))
                         <a href="{{ route('riwayat.index', ['tab' => $tab]) }}" class="btn btn-fundflow-glass py-2 px-3" title="Reset filter" wire:navigate>
-                            <i class="fas fa-times"></i>
+                            <div style="font-size: 20px; line-height: 1;">↺</div>
                         </a>
                     @endif
                 </form>

@@ -4,17 +4,6 @@
 @section('banner_title', 'Detail Reschedule')
 @section('banner_subtitle', 'Informasi lengkap pengajuan perubahan jadwal konsultasi #' . $penjadwalanUlang->id)
 
-@section('banner_action')
-    <div class="d-flex gap-2">
-        <a href="{{ route('penjadwalan-ulang.edit', $penjadwalanUlang) }}" class="btn btn-fundflow-primary" wire:navigate>
-            <i class="fas fa-check-circle me-1"></i> Review / Edit
-        </a>
-        <a href="{{ route('penjadwalan-ulang.index') }}" class="btn btn-fundflow-glass" wire:navigate>
-            <i class="fas fa-arrow-left me-1"></i> Kembali
-        </a>
-    </div>
-@endsection
-
 @section('content')
 <div class="glass-card p-4 p-md-5 mb-4 simonka-fade-in">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom border-white gap-3">
@@ -58,6 +47,14 @@
                 {{ $penjadwalanUlang->alasan }}
             </div>
         </div>
+    </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+        <a href="{{ route('penjadwalan-ulang.edit', $penjadwalanUlang) }}" class="btn btn-fundflow-primary" wire:navigate>
+         Review / Edit
+        </a>
+        <a href="{{ route('penjadwalan-ulang.index') }}" class="btn btn-fundflow-glass" wire:navigate>
+          Kembali
+        </a>
     </div>
 </div>
 @endsection

@@ -4,13 +4,6 @@
 @section('banner_title', 'Penjadwalan Ulang')
 @section('banner_subtitle', 'Manajemen daftar pengajuan perubahan waktu dan tanggal konsultasi.')
 
-@section('banner_action')
-    @can('create', App\Models\PenjadwalanUlang::class)
-        <a href="{{ route('penjadwalan-ulang.create') }}" class="btn btn-fundflow-primary" wire:navigate>
-            <i class="fas fa-plus"></i> Ajukan Reschedule
-        </a>
-    @endcan
-@endsection
 
 @section('content')
 <div class="glass-card p-4 p-md-5 simonka-fade-in">
@@ -30,11 +23,6 @@
                 <button type="submit" class="btn btn-fundflow-glass py-2 px-3">
                     <span class="fw-bold">Cari</span>
                 </button>
-                @if(request('search'))
-                    <a href="{{ route('penjadwalan-ulang.index') }}" class="btn btn-fundflow-glass py-2 px-3" title="Reset filter" wire:navigate>
-                        <i class="fas fa-times"></i>
-                    </a>
-                @endif
             </form>
             @can('create', App\Models\PenjadwalanUlang::class)
                 <a href="{{ route('penjadwalan-ulang.create') }}" class="btn btn-fundflow-primary py-2 px-3.5 d-inline-flex align-items-center gap-1.5" wire:navigate>
