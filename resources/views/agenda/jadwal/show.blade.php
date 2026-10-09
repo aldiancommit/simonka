@@ -11,7 +11,7 @@
         <div>
             <h3 class="fw-bolder mb-1 text-dark tracking-tight">{{ $jadwalKegiatan->nama_kegiatan }}</h3>
             <p class="text-muted small mb-0 fw-medium">
-                <i class="fas fa-map-marker-alt text-primary me-1"></i>{{ $jadwalKegiatan->lokasi ?: 'Lokasi belum ditentukan' }}
+                <i class="fas fa-map-marker-alt text-primary-glass me-1"></i>{{ $jadwalKegiatan->lokasi ?: 'Lokasi belum ditentukan' }}
             </p>
         </div>
         @php

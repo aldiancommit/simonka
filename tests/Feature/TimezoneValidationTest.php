@@ -1,15 +1,15 @@
 <?php
 
+use App\Http\Requests\StoreKonsultasiRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\StoreKonsultasiRequest;
 
 test('validation after_or_equal:today correctly uses local WITA date during early morning hours', function () {
     // Freeze time to 2026-10-08 02:00:00 in Asia/Makassar (WITA)
     // In UTC, this is still 2026-10-07 18:00:00
     Carbon::setTestNow(Carbon::parse('2026-10-08 02:00:00', 'Asia/Makassar'));
 
-    $rules = (new StoreKonsultasiRequest())->rules();
+    $rules = (new StoreKonsultasiRequest)->rules();
 
     // 1. Tanggal 2026-10-07 sudah lampau di WITA (harus DITOLAK)
     $yesterdayData = [

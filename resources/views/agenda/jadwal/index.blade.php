@@ -31,16 +31,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="glass-card-subtle p-3 rounded-3 mb-4 border-start border-4 border-success d-flex align-items-center justify-content-between" role="alert">
-            <div class="d-flex align-items-center gap-2 text-dark font-medium small">
-                <i class="fas fa-check-circle text-success fs-5"></i>
-                <span>{{ session('success') }}</span>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
     <div class="table-responsive">
         <table class="table align-middle">
             <thead>
@@ -93,7 +83,6 @@
                                     aria-expanded="false" 
                                     title="Opsi">
                                 <i class="fas fa-ellipsis-v text-muted fs-6"></i>
-                                <span class="fw-bold fs-6">⋯</span>
                                 <i class="fas fa-caret-down text-muted fs-6"></i>
                             </button>
 
@@ -128,7 +117,9 @@
                                 <li>
                                     <form action="{{ route('agenda.jadwal.destroy', ['jadwal' => $jadwal]) }}" 
                                         method="POST" 
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal kegiatan ini?');" 
+                                        data-confirm-title="Hapus Jadwal Kegiatan"
+                                        data-confirm-message="Apakah Anda yakin ingin menghapus jadwal kegiatan &quot;{{ $jadwal->nama_kegiatan }}&quot;? Tindakan ini tidak dapat dibatalkan dan data akan dihapus permanen."
+                                        data-confirm-btn="Ya, Hapus Data"
                                         class="m-0">
                                         @csrf
                                         @method('DELETE')
@@ -147,6 +138,9 @@
                 @empty
                 <tr>
                     <td colspan="6" class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-comments fa-lg"></i>
+                        </div>
                         <h6 class="fw-bold text-dark mb-1">Tidak ada jadwal kegiatan</h6>
                         <p class="text-muted small mb-3">
                             @if(request('search'))

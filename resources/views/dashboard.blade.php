@@ -18,7 +18,7 @@
                     <span class="h1 fw-bolder mb-0 text-dark tracking-tight" style="font-size: 2.85rem; letter-spacing: -0.03em;">
                         {{ $totalKonsultasi }}
                     </span>
-                    <span class="text-muted fw-semibold" style="font-size: 0.95rem;">permohonan tercatat</span>
+                    <span class="text-muted fw-semibold" style="font-size: 0.95rem;">Permohonan tercatat</span>
                 </div>
             </div>
 
@@ -280,7 +280,7 @@
                                     <span class="text-muted small">{{ $reschedule->konsultasi?->instansi ?: 'Perorangan' }}</span>
                                 </td>
                                 <td>
-                                    <div class="fw-bold text-primary">{{ $reschedule->tanggal_baru->format('d/m/Y') }}</div>
+                                    <div class="fw-bold text-primary-glass">{{ $reschedule->tanggal_baru->format('d/m/Y') }}</div>
                                     <span class="text-muted small">{{ date('H:i', strtotime($reschedule->waktu_mulai_baru)) }} WIB</span>
                                 </td>
                                 <td>

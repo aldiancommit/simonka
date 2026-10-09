@@ -65,7 +65,7 @@
 
     @if($konsultasi->penjadwalanUlangs->isNotEmpty())
         <h5 class="fw-bold text-dark mt-5 mb-3 d-flex align-items-center gap-2">
-            <i class="fas fa-history text-primary"></i> Riwayat Pengajuan Reschedule
+            <i class="fas fa-history text-primary-glass"></i> Riwayat Pengajuan Reschedule
         </h5>
         <div class="table-responsive">
             <table class="table align-middle">
@@ -81,7 +81,7 @@
                     @foreach($konsultasi->penjadwalanUlangs as $pu)
                         <tr>
                             <td>{{ $pu->tanggal_lama->format('d/m/Y') }}</td>
-                            <td class="fw-bold text-primary">{{ $pu->tanggal_baru->format('d/m/Y') }} ({{ date('H:i', strtotime($pu->waktu_mulai_baru)) }})</td>
+                            <td class="fw-bold text-primary-glass">{{ $pu->tanggal_baru->format('d/m/Y') }} ({{ date('H:i', strtotime($pu->waktu_mulai_baru)) }})</td>
                             <td class="text-muted">{{ $pu->alasan }}</td>
                             <td>
                                 @php

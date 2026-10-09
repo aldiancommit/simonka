@@ -87,9 +87,16 @@
             </div>
         </form>
     @elseif(auth()->user()?->hasRole(\App\Enums\Role::Sekretariat) && $penjadwalanUlang->status !== 'Menunggu')
-        {{-- Sekretariat jika status sudah Disetujui/Ditolak: Read-only --}}
-        <div class="alert alert-info small rounded-3 mb-4">
-            <i class="fas fa-info-circle me-2"></i>Pengajuan penjadwalan ulang ini sudah diputuskan (<strong>{{ $penjadwalanUlang->status }}</strong>) dan tidak dapat diedit kembali oleh Sekretariat.
+        <div class="simonka-alert simonka-alert-info mb-4" role="alert">
+            <div class="simonka-alert-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="simonka-alert-content">
+                <div class="simonka-alert-title">Pengajuan Telah Diputuskan</div>
+                <div class="simonka-alert-message">
+                    Pengajuan penjadwalan ulang ini sudah diputuskan (<strong>{{ $penjadwalanUlang->status }}</strong>) dan tidak dapat diedit kembali oleh Sekretariat.
+                </div>
+            </div>
         </div>
         <div class="glass-card-subtle p-4 rounded-4 mb-4 border border-light">
             <div class="row g-3">

@@ -117,6 +117,9 @@
                         <tr>
                             <td colspan="{{ $tab == 'jadwal' ? 6 : 6 }}" class="empty-state">
                                 <div>
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-comments fa-lg"></i>
+                                </div>
                                 <h6 class="fw-bold text-dark mb-1">Tidak ada arsip ditemukan</h6>
                                 <p class="text-muted small mb-0">
                                     @if(request('search'))

@@ -12,19 +12,30 @@
             <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom border-white">
                 <div>
                     <h4 class="fw-bolder mb-1 text-dark tracking-tight d-flex align-items-center gap-2">
-                        <i class="fas fa-filter text-primary"></i> Filter Rekapitulasi Data
+                        <i class="fas fa-filter text-primary-glass"></i> Filter Rekapitulasi Data
                     </h4>
                     <p class="text-muted small mb-0">Pilih kriteria rentang tanggal, jenis data, dan status untuk menghasilkan dokumen laporan resmi.</p>
                 </div>
             </div>
 
             @if ($errors->any())
-                <div class="glass-card-subtle p-3 rounded-3 mb-4 border-start border-4 border-danger" role="alert">
-                    <ul class="mb-0 text-danger small fw-semibold ps-3">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="simonka-alert simonka-alert-danger mb-4" role="alert">
+                    <div class="simonka-alert-icon">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div class="simonka-alert-content">
+                        <div class="simonka-alert-title">Parameter Filter Tidak Valid</div>
+                        <div class="simonka-alert-message">
+                            <ul class="mb-0 ps-3">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                    <button type="button" class="simonka-alert-close" onclick="this.closest('.simonka-alert').remove()" aria-label="Tutup">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             @endif
 

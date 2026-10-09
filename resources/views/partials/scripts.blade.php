@@ -32,6 +32,9 @@
 <!-- App Script -->
 <script src="{{ asset('assets/js/hope-ui.js') }}?v={{ filemtime(public_path('assets/js/hope-ui.js')) }}" data-navigate-once defer></script>
 
+<!-- SIMONKA Modern Alert & Confirmation System -->
+<script src="{{ asset('assets/js/simonka-alerts.js') }}?v={{ filemtime(public_path('assets/js/simonka-alerts.js')) }}" data-navigate-once defer></script>
+
 @livewireScripts
 
 <script data-navigate-once>

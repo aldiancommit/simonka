@@ -14,6 +14,9 @@
 
     <!-- App Shell Wrapper (FundFlow Architecture) -->
     <div class="simonka-app-shell">
+        <!-- Global Flash Alerts & Notifications Carrier -->
+        @include('partials.alerts')
+
         <!-- Sidebar Backdrop for Mobile -->
         <div class="simonka-sidebar-backdrop" data-toggle="sidebar"></div>
 

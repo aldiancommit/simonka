@@ -37,7 +37,7 @@
         </div>
         <div class="col-md-6">
             <label class="text-muted small text-uppercase fw-bold d-block mb-1" style="font-size: 0.72rem;">Usulan Jadwal Baru</label>
-            <div class="fw-bold text-primary fs-6">
+            <div class="fw-bold text-primary-glass fs-6">
                 {{ $penjadwalanUlang->tanggal_baru->format('d F Y') }} · {{ date('H:i', strtotime($penjadwalanUlang->waktu_mulai_baru)) }} WIB
             </div>
         </div>

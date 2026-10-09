@@ -18,9 +18,16 @@
                             <p class="text-muted small">Anda tidak memiliki hak akses atau wewenang untuk membuka halaman atau melakukan aksi ini.</p>
                         </div>
 
-                        <div class="alert alert-warning py-2 px-3 small rounded-3 mb-4 text-start">
-                            <i class="fas fa-exclamation-triangle me-1"></i>
-                            {{ $exception->getMessage() ?: 'Aksi ini dibatasi sesuai dengan peran akun Anda di sistem SIMONKA.' }}
+                        <div class="simonka-alert simonka-alert-warning mb-4 text-start" role="alert">
+                            <div class="simonka-alert-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="simonka-alert-content">
+                                <div class="simonka-alert-title">Batasan Akses</div>
+                                <div class="simonka-alert-message">
+                                    {{ $exception->getMessage() ?: 'Aksi ini dibatasi sesuai dengan peran akun Anda di sistem SIMONKA.' }}
+                                </div>
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-center gap-2">

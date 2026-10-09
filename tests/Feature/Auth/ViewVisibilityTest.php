@@ -194,4 +194,3 @@ test('10. pimpinan on empty index pages does not see create links or empty-state
     $sekretariatPu->assertSee(route('penjadwalan-ulang.create'));
     $sekretariatPu->assertSee('Ajukan Reschedule Baru');
 });
-

@@ -25,19 +25,35 @@
                                 Konsultasi Kepala Badan 
                             </p>
                         </div>
+                        @include('partials.alerts')
+
                         @if ($errors->any())
-                            <div class="alert alert-danger py-2 px-3 small rounded-3 mb-4">
-                                <ul class="mb-0 ps-3">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
+                            <div class="simonka-alert simonka-alert-danger mb-4 text-start" role="alert">
+                                <div class="simonka-alert-icon">
+                                    <i class="fas fa-exclamation"></i>
+                                </div>
+                                <div class="simonka-alert-content">
+                                    <div class="simonka-alert-title">Gagal Masuk!</div>
+                                    <div class="simonka-alert-message">
+                                        <ul class="mb-0 ps-3">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         @endif
 
                         @if (session('status'))
-                            <div class="alert alert-info py-2 px-3 small rounded-3 mb-4">
-                                {{ session('status') }}
+                            <div class="simonka-alert simonka-alert-info mb-4 text-start" role="alert">
+                                <div class="simonka-alert-icon">
+                                    <i class="fas fa-info"></i>
+                                </div>
+                                <div class="simonka-alert-content">
+                                    <div class="simonka-alert-title">Informasi</div>
+                                    <div class="simonka-alert-message">{{ session('status') }}</div>
+                                </div>
                             </div>
                         @endif
 
